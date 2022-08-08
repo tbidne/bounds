@@ -1,0 +1,7 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "lib:bounds"
+
+    - path: "./app/Main.hs"
+      component: "bounds:exe:bounds"
