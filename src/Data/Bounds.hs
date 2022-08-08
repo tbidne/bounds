@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 -- | Provides various typeclasses for dealing with bounded and unbounded
 -- types.
 module Data.Bounds
@@ -13,7 +15,9 @@ module Data.Bounds
 where
 
 import Control.Applicative (Const)
+#if MIN_VERSION_base(4, 16, 0)
 import Data.Bits (And, Iff, Ior, Xor)
+#endif
 import Data.Char (GeneralCategory)
 import Data.Coerce (Coercible)
 import Data.Functor.Identity (Identity)
@@ -33,7 +37,9 @@ import Data.Semigroup
     Sum,
     WrappedMonoid,
   )
+#if MIN_VERSION_base(4, 16, 0)
 import Data.Tuple (Solo)
+#endif
 import Data.Type.Coercion (Coercion)
 import Data.Type.Equality (type (:~:), type (~~))
 import Data.Typeable (type (:~~:))
@@ -62,7 +68,11 @@ import Foreign.C.Types
   )
 import Foreign.Ptr (IntPtr, WordPtr)
 import GHC.ByteOrder (ByteOrder)
+#if MIN_VERSION_base(4, 16, 0)
 import GHC.Exts (Levity, VecCount, VecElem)
+#else
+import GHC.Exts (VecCount, VecElem)
+#endif
 import GHC.Generics
   ( Associativity,
     DecidedStrictness,
@@ -318,8 +328,12 @@ instance UpperBounded Char where upperBound = maxBound; {-# INLINE upperBound #-
 -- | @since 0.1
 instance UpperBounded Int where upperBound = maxBound; {-# INLINE upperBound #-}
 
+#if MIN_VERSION_base(4, 16, 0)
+
 -- | @since 0.1
 instance UpperBounded Levity where upperBound = maxBound; {-# INLINE upperBound #-}
+
+#endif
 
 -- | @since 0.1
 instance UpperBounded VecCount where upperBound = maxBound; {-# INLINE upperBound #-}
@@ -329,6 +343,8 @@ instance UpperBounded VecElem where upperBound = maxBound; {-# INLINE upperBound
 
 -- | @since 0.1
 instance UpperBounded Word where upperBound = maxBound; {-# INLINE upperBound #-}
+
+#if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
 instance Bounded a => UpperBounded (And a) where upperBound = maxBound; {-# INLINE upperBound #-}
@@ -341,6 +357,8 @@ instance Bounded a => UpperBounded (Ior a) where upperBound = maxBound; {-# INLI
 
 -- | @since 0.1
 instance Bounded a => UpperBounded (Xor a) where upperBound = maxBound; {-# INLINE upperBound #-}
+
+#endif
 
 -- | @since 0.1
 instance Bounded a => UpperBounded (Identity a) where upperBound = maxBound; {-# INLINE upperBound #-}
@@ -372,8 +390,12 @@ instance Bounded a => UpperBounded (Product a) where upperBound = maxBound; {-# 
 -- | @since 0.1
 instance Bounded a => UpperBounded (Sum a) where upperBound = maxBound; {-# INLINE upperBound #-}
 
+#if MIN_VERSION_base(4, 16, 0)
+
 -- | @since 0.1
 instance Bounded a => UpperBounded (Solo a) where upperBound = maxBound; {-# INLINE upperBound #-}
+
+#endif
 
 -- | @since 0.1
 instance UpperBounded (Proxy t) where upperBound = maxBound; {-# INLINE upperBound #-}
@@ -827,8 +849,12 @@ instance LowerBounded Char where lowerBound = minBound; {-# INLINE lowerBound #-
 -- | @since 0.1
 instance LowerBounded Int where lowerBound = minBound; {-# INLINE lowerBound #-}
 
+#if MIN_VERSION_base(4, 16, 0)
+
 -- | @since 0.1
 instance LowerBounded Levity where lowerBound = minBound; {-# INLINE lowerBound #-}
+
+#endif
 
 -- | @since 0.1
 instance LowerBounded VecCount where lowerBound = minBound; {-# INLINE lowerBound #-}
@@ -838,6 +864,8 @@ instance LowerBounded VecElem where lowerBound = minBound; {-# INLINE lowerBound
 
 -- | @since 0.1
 instance LowerBounded Word where lowerBound = minBound; {-# INLINE lowerBound #-}
+
+#if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
 instance Bounded a => LowerBounded (And a) where lowerBound = minBound; {-# INLINE lowerBound #-}
@@ -850,6 +878,8 @@ instance Bounded a => LowerBounded (Ior a) where lowerBound = minBound; {-# INLI
 
 -- | @since 0.1
 instance Bounded a => LowerBounded (Xor a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+
+#endif
 
 -- | @since 0.1
 instance Bounded a => LowerBounded (Identity a) where lowerBound = minBound; {-# INLINE lowerBound #-}
@@ -881,11 +911,15 @@ instance Bounded a => LowerBounded (Product a) where lowerBound = minBound; {-# 
 -- | @since 0.1
 instance Bounded a => LowerBounded (Sum a) where lowerBound = minBound; {-# INLINE lowerBound #-}
 
+#if MIN_VERSION_base(4, 16, 0)
+
 -- | @since 0.1
 instance Bounded a => LowerBounded (Solo a) where lowerBound = minBound; {-# INLINE lowerBound #-}
 
+#endif
+
 -- | @since 0.1
-instance LowerBounded (Proxy t) where; lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded (Proxy t) where lowerBound = minBound; {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance (Bounded a, Bounded b) => LowerBounded (a, b) where
