@@ -26,8 +26,13 @@ jobs:
       - uses: haskell/actions/setup@v2.0.0
         with:
           enable-stack: true
-      
+
       - name: Compile
         env:
           STACK_YAML: ${{ matrix.stack_yaml }}
         run: stack build
+
+      - name: Test
+        env:
+          STACK_YAML: ${{ matrix.stack_yaml }}
+        run: stack test --test-arguments "--max-runs 100000"

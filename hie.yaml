@@ -3,5 +3,5 @@ cradle:
     - path: "./src"
       component: "lib:bounds"
 
-    - path: "./app/Main.hs"
-      component: "bounds:exe:bounds"
+    - path: "./test/unit"
+      component: "bounds:test:unit"
