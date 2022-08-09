@@ -11,9 +11,6 @@ where
 
 import Control.Applicative (Const)
 import Data.Bounds (LowerBounded, UpperBounded)
-import Data.Typeable (Proxy (..), Typeable)
-import Hedgehog (Gen)
-import Hedgehog.Gen (choice)
 #if MIN_VERSION_base(4, 16, 0)
 import Data.Bits (And, Iff, Ior, Xor)
 #endif
@@ -38,7 +35,7 @@ import Data.Semigroup
 import Data.Tuple (Solo)
 #endif
 import Data.Type.Equality (type (:~:))
-import Data.Typeable (type (:~~:))
+import Data.Typeable (Proxy (..), Typeable, type (:~~:))
 import Data.Word (Word16, Word32, Word64, Word8)
 import Foreign.C.Types
   ( CBool,
@@ -74,6 +71,8 @@ import GHC.Generics
     DecidedStrictness,
     SourceStrictness,
   )
+import Hedgehog (Gen)
+import Hedgehog.Gen (choice)
 import System.Posix.Types
   ( CBlkCnt,
     CBlkSize,
