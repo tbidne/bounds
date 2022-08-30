@@ -15,35 +15,34 @@ module Data.Bounds
   )
 where
 
-import Control.Applicative (Const)
+import Control.Applicative (Const (Const))
 #if MIN_VERSION_base(4, 16, 0)
-import Data.Bits (And, Iff, Ior, Xor)
+import Data.Bits (And (And), Iff (Iff), Ior (Ior), Xor (Xor))
 #endif
 import Data.Char (GeneralCategory)
 import Data.Coerce (Coercible)
-import Data.Functor.Identity (Identity)
+import Data.Functor.Identity (Identity (Identity))
 import Data.Int (Int16, Int32, Int64, Int8)
-import Data.Monoid (Ap)
-import Data.Ord (Down)
+import Data.Monoid (Ap (Ap))
+import Data.Ord (Down (Down))
 import Data.Proxy (Proxy)
 import Data.Semigroup
   ( All,
     Any,
-    Dual,
-    First,
-    Last,
-    Max,
-    Min,
-    Product,
-    Sum,
-    WrappedMonoid,
+    Dual (Dual),
+    First (First),
+    Last (Last),
+    Max (Max),
+    Min (Min),
+    Product (Product),
+    Sum (Sum),
+    WrappedMonoid (WrapMonoid),
   )
 #if MIN_VERSION_base(4, 16, 0)
-import Data.Tuple (Solo)
+import Data.Tuple (Solo (Solo))
 #endif
 import Data.Type.Coercion (Coercion)
-import Data.Type.Equality (type (:~:), type (~~))
-import Data.Typeable (type (:~~:))
+import Data.Type.Equality ((:~:) (Refl), (:~~:) (HRefl), type (:~:), type (~~))
 import Data.Word (Word16, Word32, Word64, Word8)
 import Foreign.C.Types
   ( CBool,
@@ -104,12 +103,22 @@ import System.Posix.Types
   )
 
 -- | Names the lower limit of a type. Types that also have a 'Bounded'
--- instance should define @lowerBound === minBound@.
+-- instance should define @lowerBound === minBound@. This can be derived
+-- with the anyclass strategy.
+--
+-- ==== __Examples__
+--
+-- >>> -- -XDeriveAnyClass, -XDerivingStrategies
+-- >>> data Foo = Foo1 | Foo2 deriving stock (Bounded, Show) deriving anyclass LowerBounded
+-- >>> lowerBound @Foo
+-- Foo1
 --
 -- @since 0.1
 class LowerBounded a where
   -- | @since 0.1
   lowerBound :: a
+  default lowerBound :: Bounded a => a
+  lowerBound = minBound
 
 -- | @since 0.1
 instance LowerBounded Natural where
@@ -117,14 +126,24 @@ instance LowerBounded Natural where
   {-# INLINE lowerBound #-}
 
 -- | Names the upper limit of a type. Types that also have a 'Bounded'
--- instance should define @upperBound === maxBound@.
+-- instance should define @upperBound === maxBound@. This can be derived
+-- with the anyclass strategy.
+--
+-- ==== __Examples__
+--
+-- >>> -- -XDeriveAnyClass, -XDerivingStrategies
+-- >>> data Foo = Foo1 | Foo2 deriving stock (Bounded, Show) deriving anyclass UpperBounded
+-- >>> upperBound @Foo
+-- Foo2
 --
 -- @since 0.1
 class UpperBounded a where
   -- | @since 0.1
   upperBound :: a
+  default upperBound :: Bounded a => a
+  upperBound = maxBound
 
--- | For types that have no lower bound.
+-- | Types that have no lower bound.
 --
 -- @since 0.1
 class LowerBoundless a
@@ -132,7 +151,7 @@ class LowerBoundless a
 -- | @since 0.1
 instance LowerBoundless Integer
 
--- | For types that have no upper bound.
+-- | Types that have no upper bound.
 --
 -- @since 0.1
 class UpperBoundless a
@@ -143,7 +162,7 @@ instance UpperBoundless Integer
 -- | @since 0.1
 instance UpperBoundless Natural
 
--- | For types that are unbounded above and below.
+-- | Types that are unbounded above and below.
 --
 -- @since 0.1
 class (LowerBoundless a, UpperBoundless a) => Boundless a
@@ -151,11 +170,11 @@ class (LowerBoundless a, UpperBoundless a) => Boundless a
 -- | @since 0.1
 instance Boundless Integer
 
--- | Newtype that gives @UpperBounded@ and @LowerBounded@ instances to types
+-- | Newtype that gives 'UpperBounded' and 'LowerBounded' instances to types
 -- that only have a @Bounded@ instance.
 --
 -- ==== __Examples__
--- >>> newtype Foo = MkFoo Int8 deriving stock (Bounded, Eq, Ord, Show)
+-- >>> newtype Foo = MkFoo Int8 deriving stock (Bounded, Show)
 -- >>> upperBound @(Bounds Foo)
 -- MkBounds {unBounds = MkFoo 127}
 --
@@ -177,1011 +196,1256 @@ newtype Bounds a = MkBounds
       -- | @since 0.1
       Show
     )
-
--- | @since 0.1
-instance Bounded a => LowerBounded (Bounds a) where
-  lowerBound = minBound
-  {-# INLINE lowerBound #-}
-
--- | @since 0.1
-instance Bounded a => UpperBounded (Bounds a) where
-  upperBound = maxBound
-  {-# INLINE upperBound #-}
+  deriving anyclass
+    ( -- | @since 0.1
+      LowerBounded,
+      -- | @since 0.1
+      UpperBounded
+    )
 
 --------------------
 -- BASE INSTANCES --
 --------------------
 
 -- | @since 0.1
-instance LowerBounded All where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded All
 
 -- | @since 0.1
-instance UpperBounded All where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded All
 
 -- | @since 0.1
-instance LowerBounded Any where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Any
 
 -- | @since 0.1
-instance UpperBounded Any where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Any
 
 -- | @since 0.1
-instance LowerBounded CBool where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CBool
 
 -- | @since 0.1
-instance UpperBounded CBool where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CBool
 
 -- | @since 0.1
-instance LowerBounded CChar where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CChar
 
 -- | @since 0.1
-instance UpperBounded CChar where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CChar
 
 -- | @since 0.1
-instance LowerBounded CInt where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CInt
 
 -- | @since 0.1
-instance UpperBounded CInt where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CInt
 
 -- | @since 0.1
-instance LowerBounded CIntMax where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CIntMax
 
 -- | @since 0.1
-instance UpperBounded CIntMax where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CIntMax
 
 -- | @since 0.1
-instance UpperBounded CIntPtr where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CIntPtr
 
 -- | @since 0.1
-instance LowerBounded CIntPtr where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CIntPtr
 
 -- | @since 0.1
-instance LowerBounded CLLong where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CLLong
 
 -- | @since 0.1
-instance UpperBounded CLLong where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CLLong
 
 -- | @since 0.1
-instance LowerBounded CLong where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CLong
 
 -- | @since 0.1
-instance UpperBounded CLong where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CLong
 
 -- | @since 0.1
-instance LowerBounded CPtrdiff where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CPtrdiff
 
 -- | @since 0.1
-instance UpperBounded CPtrdiff where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CPtrdiff
 
 -- | @since 0.1
-instance LowerBounded CSChar where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CSChar
 
 -- | @since 0.1
-instance UpperBounded CSChar where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CSChar
 
 -- | @since 0.1
-instance LowerBounded CShort where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CShort
 
 -- | @since 0.1
-instance UpperBounded CShort where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CShort
 
 -- | @since 0.1
-instance LowerBounded CSigAtomic where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CSigAtomic
 
 -- | @since 0.1
-instance UpperBounded CSigAtomic where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CSigAtomic
 
 -- | @since 0.1
-instance LowerBounded CSize where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CSize
 
 -- | @since 0.1
-instance UpperBounded CSize where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CSize
 
 -- | @since 0.1
-instance LowerBounded CUChar where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CUChar
 
 -- | @since 0.1
-instance UpperBounded CUChar where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CUChar
 
 -- | @since 0.1
-instance LowerBounded CUInt where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CUInt
 
 -- | @since 0.1
-instance UpperBounded CUInt where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CUInt
 
 -- | @since 0.1
-instance LowerBounded CUIntMax where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CUIntMax
 
 -- | @since 0.1
-instance UpperBounded CUIntMax where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CUIntMax
 
 -- | @since 0.1
-instance LowerBounded CUIntPtr where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CUIntPtr
 
 -- | @since 0.1
-instance UpperBounded CUIntPtr where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CUIntPtr
 
 -- | @since 0.1
-instance LowerBounded CULLong where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CULLong
 
 -- | @since 0.1
-instance UpperBounded CULLong where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CULLong
 
 -- | @since 0.1
-instance LowerBounded CULong where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CULong
 
 -- | @since 0.1
-instance UpperBounded CULong where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CULong
 
 -- | @since 0.1
-instance LowerBounded CUShort where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CUShort
 
 -- | @since 0.1
-instance UpperBounded CUShort where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CUShort
 
 -- | @since 0.1
-instance LowerBounded CWchar where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CWchar
 
 -- | @since 0.1
-instance UpperBounded CWchar where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CWchar
 
 -- | @since 0.1
-instance LowerBounded IntPtr where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded IntPtr
 
 -- | @since 0.1
-instance UpperBounded IntPtr where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded IntPtr
 
 -- | @since 0.1
-instance LowerBounded WordPtr where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded WordPtr
 
 -- | @since 0.1
-instance UpperBounded WordPtr where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded WordPtr
 
 -- | @since 0.1
-instance LowerBounded ByteOrder where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded ByteOrder
 
 -- | @since 0.1
-instance UpperBounded ByteOrder where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded ByteOrder
 
 -- | @since 0.1
-instance LowerBounded Associativity where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Associativity
 
 -- | @since 0.1
-instance UpperBounded Associativity where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Associativity
 
 -- | @since 0.1
-instance LowerBounded DecidedStrictness where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded DecidedStrictness
 
 -- | @since 0.1
-instance UpperBounded DecidedStrictness where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded DecidedStrictness
 
 -- | @since 0.1
-instance LowerBounded SourceStrictness where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded SourceStrictness
 
 -- | @since 0.1
-instance UpperBounded SourceStrictness where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded SourceStrictness
 
 -- | @since 0.1
-instance LowerBounded Int16 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Int16
 
 -- | @since 0.1
-instance UpperBounded Int16 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Int16
 
 -- | @since 0.1
-instance LowerBounded Int32 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Int32
 
 -- | @since 0.1
-instance UpperBounded Int32 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Int32
 
 -- | @since 0.1
-instance LowerBounded Int64 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Int64
 
 -- | @since 0.1
-instance UpperBounded Int64 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Int64
 
 -- | @since 0.1
-instance LowerBounded Int8 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Int8
 
 -- | @since 0.1
-instance UpperBounded Int8 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Int8
 
 -- | @since 0.1
-instance LowerBounded GeneralCategory where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded GeneralCategory
 
 -- | @since 0.1
-instance UpperBounded GeneralCategory where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded GeneralCategory
 
 -- | @since 0.1
-instance LowerBounded Word16 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Word16
 
 -- | @since 0.1
-instance UpperBounded Word16 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Word16
 
 -- | @since 0.1
-instance LowerBounded Word32 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Word32
 
 -- | @since 0.1
-instance UpperBounded Word32 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Word32
 
 -- | @since 0.1
-instance LowerBounded Word64 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Word64
 
 -- | @since 0.1
-instance UpperBounded Word64 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Word64
 
 -- | @since 0.1
-instance LowerBounded Word8 where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Word8
 
 -- | @since 0.1
-instance UpperBounded Word8 where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Word8
 
 -- | @since 0.1
-instance LowerBounded CBlkCnt where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CBlkCnt
 
 -- | @since 0.1
-instance UpperBounded CBlkCnt where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CBlkCnt
 
 -- | @since 0.1
-instance LowerBounded CBlkSize where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CBlkSize
 
 -- | @since 0.1
-instance UpperBounded CBlkSize where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CBlkSize
 
 -- | @since 0.1
-instance LowerBounded CClockId where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CClockId
 
 -- | @since 0.1
-instance UpperBounded CClockId where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CClockId
 
 -- | @since 0.1
-instance LowerBounded CDev where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CDev
 
 -- | @since 0.1
-instance UpperBounded CDev where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CDev
 
 -- | @since 0.1
-instance LowerBounded CFsBlkCnt where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CFsBlkCnt
 
 -- | @since 0.1
-instance UpperBounded CFsBlkCnt where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CFsBlkCnt
 
 -- | @since 0.1
-instance LowerBounded CFsFilCnt where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CFsFilCnt
 
 -- | @since 0.1
-instance UpperBounded CFsFilCnt where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CFsFilCnt
 
 -- | @since 0.1
-instance LowerBounded CGid where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CGid
 
 -- | @since 0.1
-instance UpperBounded CGid where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CGid
 
 -- | @since 0.1
-instance LowerBounded CId where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CId
 
 -- | @since 0.1
-instance UpperBounded CId where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CId
 
 -- | @since 0.1
-instance LowerBounded CIno where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CIno
 
 -- | @since 0.1
-instance UpperBounded CIno where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CIno
 
 -- | @since 0.1
-instance LowerBounded CKey where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CKey
 
 -- | @since 0.1
-instance UpperBounded CKey where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CKey
 
 -- | @since 0.1
-instance LowerBounded CMode where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CMode
 
 -- | @since 0.1
-instance UpperBounded CMode where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CMode
 
 -- | @since 0.1
-instance LowerBounded CNfds where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CNfds
 
 -- | @since 0.1
-instance UpperBounded CNfds where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CNfds
 
 -- | @since 0.1
-instance LowerBounded CNlink where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CNlink
 
 -- | @since 0.1
-instance UpperBounded CNlink where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CNlink
 
 -- | @since 0.1
-instance LowerBounded COff where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded COff
 
 -- | @since 0.1
-instance UpperBounded COff where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded COff
 
 -- | @since 0.1
-instance LowerBounded CPid where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CPid
 
 -- | @since 0.1
-instance UpperBounded CPid where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CPid
 
 -- | @since 0.1
-instance LowerBounded CRLim where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CRLim
 
 -- | @since 0.1
-instance UpperBounded CRLim where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CRLim
 
 -- | @since 0.1
-instance LowerBounded CSsize where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CSsize
 
 -- | @since 0.1
-instance UpperBounded CSsize where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CSsize
 
 -- | @since 0.1
-instance LowerBounded CTcflag where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CTcflag
 
 -- | @since 0.1
-instance UpperBounded CTcflag where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CTcflag
 
 -- | @since 0.1
-instance LowerBounded CUid where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded CUid
 
 -- | @since 0.1
-instance UpperBounded CUid where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded CUid
 
 -- | @since 0.1
-instance LowerBounded Fd where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Fd
 
 -- | @since 0.1
-instance UpperBounded Fd where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Fd
 
 -- | @since 0.1
-instance LowerBounded Ordering where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Ordering
 
 -- | @since 0.1
-instance UpperBounded Ordering where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Ordering
 
 -- | @since 0.1
-instance LowerBounded () where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded ()
 
 -- | @since 0.1
-instance UpperBounded () where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded ()
 
 -- | @since 0.1
-instance LowerBounded Bool where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Bool
 
 -- | @since 0.1
-instance UpperBounded Bool where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Bool
 
 -- | @since 0.1
-instance LowerBounded Char where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Char
 
 -- | @since 0.1
-instance UpperBounded Char where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Char
 
 -- | @since 0.1
-instance LowerBounded Int where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Int
 
 -- | @since 0.1
-instance UpperBounded Int where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Int
 
 #if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
-instance LowerBounded Levity where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Levity
 
 -- | @since 0.1
-instance UpperBounded Levity where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Levity
 
 #endif
 
 -- | @since 0.1
-instance LowerBounded VecCount where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded VecCount
 
 -- | @since 0.1
-instance UpperBounded VecCount where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded VecCount
 
 -- | @since 0.1
-instance LowerBounded VecElem where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded VecElem
 
 -- | @since 0.1
-instance UpperBounded VecElem where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded VecElem
 
 -- | @since 0.1
-instance LowerBounded Word where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded Word
 
 -- | @since 0.1
-instance UpperBounded Word where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded Word
 
 #if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (And a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (And a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (And a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (And a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Iff a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Iff a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Iff a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Iff a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Ior a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Ior a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Ior a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Ior a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Xor a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Xor a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Xor a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Xor a)
 
 #endif
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Identity a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Identity a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Identity a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Identity a)
+
+#if !MIN_VERSION_base(4, 15, 0)
+
+-- NB. For GHC < 9, Bounded Down is derived. This means that min/maxBound
+-- are not flipped, which is presumably not what we want. However,
+-- we want Lower/UpperBounded to agree w/ Bounded wherever applicable,
+-- thus we do the same thing here.
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Down a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Down a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Down a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Down a)
+
+#else
+
+-- For GHC >= 9, Bounded Down correctly flipped
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (First a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance UpperBounded a => LowerBounded (Down a) where
+  lowerBound = Down upperBound
+  {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (First a) where upperBound = maxBound; {-# INLINE upperBound #-}
+instance LowerBounded a => UpperBounded (Down a) where
+  upperBound = Down lowerBound
+  {-# INLINE upperBound #-}
+
+#endif
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Last a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (First a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Last a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (First a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Max a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Last a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Max a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Last a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Min a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Max a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Min a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Max a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (WrappedMonoid a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Min a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (WrappedMonoid a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Min a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Dual a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (WrappedMonoid a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Dual a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (WrappedMonoid a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Product a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Dual a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Product a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Dual a)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Sum a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+deriving via a instance LowerBounded a => LowerBounded (Product a)
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Sum a) where upperBound = maxBound; {-# INLINE upperBound #-}
+deriving via a instance UpperBounded a => UpperBounded (Product a)
+
+-- | @since 0.1
+deriving via a instance LowerBounded a => LowerBounded (Sum a)
+
+-- | @since 0.1
+deriving via a instance UpperBounded a => UpperBounded (Sum a)
 
 #if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Solo a) where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded a => LowerBounded (Solo a) where
+  lowerBound = Solo lowerBound
+  {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Solo a) where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded a => UpperBounded (Solo a) where
+  upperBound = Solo upperBound
+  {-# INLINE upperBound #-}
 
 #endif
 
 -- | @since 0.1
-instance LowerBounded (Proxy t) where lowerBound = minBound; {-# INLINE lowerBound #-}
+instance LowerBounded (Proxy t)
 
 -- | @since 0.1
-instance UpperBounded (Proxy t) where upperBound = maxBound; {-# INLINE upperBound #-}
+instance UpperBounded (Proxy t)
 
 -- | @since 0.1
-instance (Bounded a, Bounded b) => LowerBounded (a, b) where
-  lowerBound = minBound
+instance (LowerBounded a, LowerBounded b) => LowerBounded (a, b) where
+  lowerBound = (lowerBound, lowerBound)
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance (Bounded a, Bounded b) => UpperBounded (a, b) where
-  upperBound = maxBound
+instance (UpperBounded a, UpperBounded b) => UpperBounded (a, b) where
+  upperBound = (upperBound, upperBound)
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance Bounded a => LowerBounded (Const a b) where
-  lowerBound = minBound
+deriving via a instance LowerBounded a => LowerBounded (Const a b)
+
+-- | @since 0.1
+deriving via a instance UpperBounded a => UpperBounded (Const a b)
+
+-- | @since 0.1
+instance (Applicative f, LowerBounded a) => LowerBounded (Ap f a) where
+  lowerBound = Ap (pure lowerBound)
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance Bounded a => UpperBounded (Const a b) where
-  upperBound = maxBound
+instance (Applicative f, UpperBounded a) => UpperBounded (Ap f a) where
+  upperBound = Ap (pure upperBound)
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance (Applicative f, Bounded a) => LowerBounded (Ap f a) where
-  lowerBound = minBound
-  {-# INLINE lowerBound #-}
+instance Coercible a b => LowerBounded (Coercion a b)
 
 -- | @since 0.1
-instance (Applicative f, Bounded a) => UpperBounded (Ap f a) where
-  upperBound = maxBound
-  {-# INLINE upperBound #-}
-
--- | @since 0.1
-instance Coercible a b => LowerBounded (Coercion a b) where
-  lowerBound = minBound
-  {-# INLINE lowerBound #-}
-
--- | @since 0.1
-instance Coercible a b => UpperBounded (Coercion a b) where
-  upperBound = maxBound
-  {-# INLINE upperBound #-}
+instance Coercible a b => UpperBounded (Coercion a b)
 
 -- | @since 0.1
 instance a ~ b => LowerBounded (a :~: b) where
-  lowerBound = minBound
-  {-# INLINE lowerBound #-}
-
--- | @since 0.1
-instance a ~~ b => LowerBounded (a :~~: b) where
-  lowerBound = minBound
+  lowerBound = Refl
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance a ~ b => UpperBounded (a :~: b) where
-  upperBound = maxBound
+  upperBound = Refl
   {-# INLINE upperBound #-}
+
+-- | @since 0.1
+instance a ~~ b => LowerBounded (a :~~: b) where
+  lowerBound = HRefl
+  {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance a ~~ b => UpperBounded (a :~~: b) where
-  upperBound = maxBound
+  upperBound = HRefl
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance (Bounded a, Bounded b, Bounded c) => LowerBounded (a, b, c) where
-  lowerBound = minBound
+instance (LowerBounded a, LowerBounded b, LowerBounded c) => LowerBounded (a, b, c) where
+  lowerBound = (lowerBound, lowerBound, lowerBound)
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance (Bounded a, Bounded b, Bounded c) => UpperBounded (a, b, c) where
-  upperBound = maxBound
+instance (UpperBounded a, UpperBounded b, UpperBounded c) => UpperBounded (a, b, c) where
+  upperBound = (upperBound, upperBound, upperBound)
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d
   ) =>
   LowerBounded (a, b, c, d)
   where
-  lowerBound = minBound
+  lowerBound = (lowerBound, lowerBound, lowerBound, lowerBound)
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d
   ) =>
   UpperBounded (a, b, c, d)
   where
-  upperBound = maxBound
+  upperBound = (upperBound, upperBound, upperBound, upperBound)
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e
   ) =>
   LowerBounded (a, b, c, d, e)
   where
-  lowerBound = minBound
+  lowerBound = (lowerBound, lowerBound, lowerBound, lowerBound, lowerBound)
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e
   ) =>
   UpperBounded (a, b, c, d, e)
   where
-  upperBound = maxBound
+  upperBound = (upperBound, upperBound, upperBound, upperBound, upperBound)
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f
   ) =>
   LowerBounded (a, b, c, d, e, f)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f
   ) =>
   UpperBounded (a, b, c, d, e, f)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g
   ) =>
   LowerBounded (a, b, c, d, e, f, g)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g
   ) =>
   UpperBounded (a, b, c, d, e, f, g)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i,
+    LowerBounded j
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i, j)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i,
+    UpperBounded j
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i, j)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i,
+    LowerBounded j,
+    LowerBounded k
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i, j, k)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i,
+    UpperBounded j,
+    UpperBounded k
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i, j, k)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i,
+    LowerBounded j,
+    LowerBounded k,
+    LowerBounded l
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i, j, k, l)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i,
+    UpperBounded j,
+    UpperBounded k,
+    UpperBounded l
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i, j, k, l)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l,
-    Bounded m
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i,
+    LowerBounded j,
+    LowerBounded k,
+    LowerBounded l,
+    LowerBounded m
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l,
-    Bounded m
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i,
+    UpperBounded j,
+    UpperBounded k,
+    UpperBounded l,
+    UpperBounded m
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l,
-    Bounded m,
-    Bounded n
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i,
+    LowerBounded j,
+    LowerBounded k,
+    LowerBounded l,
+    LowerBounded m,
+    LowerBounded n
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l,
-    Bounded m,
-    Bounded n
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i,
+    UpperBounded j,
+    UpperBounded k,
+    UpperBounded l,
+    UpperBounded m,
+    UpperBounded n
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l,
-    Bounded m,
-    Bounded n,
-    Bounded o
+  ( LowerBounded a,
+    LowerBounded b,
+    LowerBounded c,
+    LowerBounded d,
+    LowerBounded e,
+    LowerBounded f,
+    LowerBounded g,
+    LowerBounded h,
+    LowerBounded i,
+    LowerBounded j,
+    LowerBounded k,
+    LowerBounded l,
+    LowerBounded m,
+    LowerBounded n,
+    LowerBounded o
   ) =>
   LowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
   where
-  lowerBound = minBound
+  lowerBound =
+    ( lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound,
+      lowerBound
+    )
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
 instance
-  ( Bounded a,
-    Bounded b,
-    Bounded c,
-    Bounded d,
-    Bounded e,
-    Bounded f,
-    Bounded g,
-    Bounded h,
-    Bounded i,
-    Bounded j,
-    Bounded k,
-    Bounded l,
-    Bounded m,
-    Bounded n,
-    Bounded o
+  ( UpperBounded a,
+    UpperBounded b,
+    UpperBounded c,
+    UpperBounded d,
+    UpperBounded e,
+    UpperBounded f,
+    UpperBounded g,
+    UpperBounded h,
+    UpperBounded i,
+    UpperBounded j,
+    UpperBounded k,
+    UpperBounded l,
+    UpperBounded m,
+    UpperBounded n,
+    UpperBounded o
   ) =>
   UpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
   where
-  upperBound = maxBound
+  upperBound =
+    ( upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound,
+      upperBound
+    )
   {-# INLINE upperBound #-}

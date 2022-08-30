@@ -22,12 +22,15 @@ source-repository head
 
 common common-exts
   default-extensions:
+    DefaultSignatures
+    DeriveAnyClass
     DerivingVia
     GADTs
     ImportQualifiedPost
     LambdaCase
     OverloadedStrings
     ScopedTypeVariables
+    StandaloneDeriving
     TypeApplications
     TypeOperators
 
