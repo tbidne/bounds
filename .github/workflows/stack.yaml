@@ -15,9 +15,11 @@ jobs:
   stack:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         stack_yaml:
           - stack_lts-18.yaml
+          - stack_lts-19.yaml
           - stack.yaml
           - stack_nightly.yaml
     steps:

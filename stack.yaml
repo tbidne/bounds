@@ -1,4 +1,4 @@
-resolver: lts-19.28
+resolver: lts-20.3
 packages:
 - .
 ghc-options:
@@ -7,5 +7,6 @@ ghc-options:
     -Wincomplete-record-updates -Wincomplete-uni-patterns
     -Wmissing-home-modules -Wmissing-export-lists -Wpartial-fields
     -Wredundant-constraints -Wunused-packages -Wmissing-deriving-strategies
+    -Wprepositive-qualified-module
 nix:
   shell-file: nix/stack.nix
