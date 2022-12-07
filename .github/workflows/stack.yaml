@@ -37,4 +37,4 @@ jobs:
       - name: Test
         env:
           STACK_YAML: ${{ matrix.stack_yaml }}
-        run: stack test --test-arguments "--max-runs 100000"
+        run: stack test --test-arguments "--hedgehog-tests 100000"
