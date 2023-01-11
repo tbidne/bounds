@@ -1,5 +1,4 @@
 .PHONY: build clean repl watch ;\
-	test unit integration functional ;\
 	cic ci formatc format lint lintc ;\
 	haddock haddockc hackage
 
