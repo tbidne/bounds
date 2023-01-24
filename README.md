@@ -8,7 +8,6 @@
 
 [![nix](http://img.shields.io/github/actions/workflow/status/tbidne/bounds/nix.yaml?branch=main&label=nix&logo=nixos&logoColor=85c5e7&labelColor=2f353c)](https://github.com/tbidne/bounds/actions/workflows/nix.yaml)
 [![cabal](http://img.shields.io/github/actions/workflow/status/tbidne/bounds/cabal.yaml?branch=main&label=cabal&labelColor=2f353c)](https://github.com/tbidne/bounds/actions/workflows/cabal.yaml)
-[![stack](http://img.shields.io/github/actions/workflow/status/tbidne/bounds/stack.yaml?branch=main&label=stack&logoColor=white&labelColor=2f353c)](https://github.com/tbidne/bounds/actions/workflows/stack.yaml)
 [![style](http://img.shields.io/github/actions/workflow/status/tbidne/bounds/style.yaml?branch=main&label=style&logoColor=white&labelColor=2f353c)](https://github.com/tbidne/bounds/actions/workflows/style.yaml)
 
 </div>
