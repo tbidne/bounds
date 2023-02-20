@@ -117,7 +117,7 @@ import System.Posix.Types
 class LowerBounded a where
   -- | @since 0.1
   lowerBound :: a
-  default lowerBound :: Bounded a => a
+  default lowerBound :: (Bounded a) => a
   lowerBound = minBound
 
 -- | @since 0.1
@@ -140,7 +140,7 @@ instance LowerBounded Natural where
 class UpperBounded a where
   -- | @since 0.1
   upperBound :: a
-  default upperBound :: Bounded a => a
+  default upperBound :: (Bounded a) => a
   upperBound = maxBound
 
 -- | Types that have no lower bound.
@@ -636,10 +636,10 @@ deriving via a instance UpperBounded a => UpperBounded (Xor a)
 #endif
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Identity a)
+deriving via a instance (LowerBounded a) => LowerBounded (Identity a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Identity a)
+deriving via a instance (UpperBounded a) => UpperBounded (Identity a)
 
 #if !MIN_VERSION_base(4, 15, 0)
 
@@ -671,52 +671,52 @@ instance LowerBounded a => UpperBounded (Down a) where
 #endif
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (First a)
+deriving via a instance (LowerBounded a) => LowerBounded (First a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (First a)
+deriving via a instance (UpperBounded a) => UpperBounded (First a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Last a)
+deriving via a instance (LowerBounded a) => LowerBounded (Last a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Last a)
+deriving via a instance (UpperBounded a) => UpperBounded (Last a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Max a)
+deriving via a instance (LowerBounded a) => LowerBounded (Max a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Max a)
+deriving via a instance (UpperBounded a) => UpperBounded (Max a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Min a)
+deriving via a instance (LowerBounded a) => LowerBounded (Min a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Min a)
+deriving via a instance (UpperBounded a) => UpperBounded (Min a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (WrappedMonoid a)
+deriving via a instance (LowerBounded a) => LowerBounded (WrappedMonoid a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (WrappedMonoid a)
+deriving via a instance (UpperBounded a) => UpperBounded (WrappedMonoid a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Dual a)
+deriving via a instance (LowerBounded a) => LowerBounded (Dual a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Dual a)
+deriving via a instance (UpperBounded a) => UpperBounded (Dual a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Product a)
+deriving via a instance (LowerBounded a) => LowerBounded (Product a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Product a)
+deriving via a instance (UpperBounded a) => UpperBounded (Product a)
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Sum a)
+deriving via a instance (LowerBounded a) => LowerBounded (Sum a)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Sum a)
+deriving via a instance (UpperBounded a) => UpperBounded (Sum a)
 
 #if MIN_VERSION_base(4, 16, 0)
 
@@ -749,10 +749,10 @@ instance (UpperBounded a, UpperBounded b) => UpperBounded (a, b) where
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-deriving via a instance LowerBounded a => LowerBounded (Const a b)
+deriving via a instance (LowerBounded a) => LowerBounded (Const a b)
 
 -- | @since 0.1
-deriving via a instance UpperBounded a => UpperBounded (Const a b)
+deriving via a instance (UpperBounded a) => UpperBounded (Const a b)
 
 -- | @since 0.1
 instance (Applicative f, LowerBounded a) => LowerBounded (Ap f a) where
@@ -765,28 +765,28 @@ instance (Applicative f, UpperBounded a) => UpperBounded (Ap f a) where
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance Coercible a b => LowerBounded (Coercion a b)
+instance (Coercible a b) => LowerBounded (Coercion a b)
 
 -- | @since 0.1
-instance Coercible a b => UpperBounded (Coercion a b)
+instance (Coercible a b) => UpperBounded (Coercion a b)
 
 -- | @since 0.1
-instance a ~ b => LowerBounded (a :~: b) where
+instance (a ~ b) => LowerBounded (a :~: b) where
   lowerBound = Refl
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance a ~ b => UpperBounded (a :~: b) where
+instance (a ~ b) => UpperBounded (a :~: b) where
   upperBound = Refl
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance a ~~ b => LowerBounded (a :~~: b) where
+instance (a ~~ b) => LowerBounded (a :~~: b) where
   lowerBound = HRefl
   {-# INLINE lowerBound #-}
 
 -- | @since 0.1
-instance a ~~ b => UpperBounded (a :~~: b) where
+instance (a ~~ b) => UpperBounded (a :~~: b) where
   upperBound = HRefl
   {-# INLINE upperBound #-}
 

@@ -77,7 +77,7 @@ minBoundSynced =
           annotateShow $ lowerBound @a
           assert $ minBound @a `eqFn` lowerBound
 
-showTy :: Typeable a => Proxy a -> String
+showTy :: (Typeable a) => Proxy a -> String
 showTy = show . typeOf
 
 #if MIN_VERSION_tasty_hedgehog(1, 2, 0)
