@@ -22,7 +22,15 @@
           ];
           devTools = c: with c; [
             (hlib.dontCheck ghcid)
-            haskell-language-server
+            (hlib.overrideCabal haskell-language-server (old: {
+              configureFlags = (old.configureFlags or [ ]) ++
+                [
+                  "-f -brittany"
+                  "-f -floskell"
+                  "-f -fourmolu"
+                  "-f -stylishhaskell"
+                ];
+            }))
           ];
           ghc-version = "ghc944";
           hlib = pkgs.haskell.lib;
@@ -39,7 +47,8 @@
               root = ./.;
               modifier = drv:
                 pkgs.haskell.lib.addBuildTools drv
-                  (buildTools compiler ++ devTools compiler);
+                  (buildTools compiler ++
+                    (if returnShellEnv then devTools compiler else [ ]));
             };
         in
         {
