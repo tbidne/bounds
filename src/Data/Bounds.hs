@@ -79,6 +79,7 @@ import GHC.Generics
     SourceStrictness,
   )
 import GHC.Natural (Natural)
+#ifndef mingw32_HOST_OS
 import System.Posix.Types
   ( CBlkCnt,
     CBlkSize,
@@ -101,6 +102,7 @@ import System.Posix.Types
     CUid,
     Fd,
   )
+#endif
 
 -- | Names the lower limit of a type. Types that also have a 'Bounded'
 -- instance should define @lowerBound === minBound@. This can be derived
@@ -429,6 +431,12 @@ instance LowerBounded Word8
 -- | @since 0.1
 instance UpperBounded Word8
 
+-- NOTE: GHC hides these types in System.Posix.Types behind flags that are
+-- specific to each type e.g. CBlkCnt is behind HTYPE_BLKCNT_T.
+-- These didn't appear to work here, so we just use a windows/no-windows check
+-- and hope that is good enough.
+
+#ifndef mingw32_HOST_OS
 -- | @since 0.1
 instance LowerBounded CBlkCnt
 
@@ -542,6 +550,7 @@ instance LowerBounded CUid
 
 -- | @since 0.1
 instance UpperBounded CUid
+#endif
 
 -- | @since 0.1
 instance LowerBounded Fd

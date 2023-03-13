@@ -73,6 +73,7 @@ import GHC.Generics
   )
 import Hedgehog (Gen)
 import Hedgehog.Gen (choice)
+#ifndef mingw32_HOST_OS
 import System.Posix.Types
   ( CBlkCnt,
     CBlkSize,
@@ -95,6 +96,7 @@ import System.Posix.Types
     CUid,
     Fd,
   )
+#endif
 
 -- | Holds the type we want to test along with required constraints.
 --
@@ -166,6 +168,7 @@ genBounded =
       pure $ MkBoundedType @Word32 Proxy,
       pure $ MkBoundedType @Word64 Proxy,
       pure $ MkBoundedType @Word8 Proxy,
+#ifndef mingw32_HOST_OS
       pure $ MkBoundedType @CBlkCnt Proxy,
       pure $ MkBoundedType @CBlkSize Proxy,
       pure $ MkBoundedType @CClockId Proxy,
@@ -186,6 +189,7 @@ genBounded =
       pure $ MkBoundedType @CSsize Proxy,
       pure $ MkBoundedType @CTcflag Proxy,
       pure $ MkBoundedType @CUid Proxy,
+#endif
       pure $ MkBoundedType @Fd Proxy,
       pure $ MkBoundedType @Ordering Proxy,
       pure $ MkBoundedType @() Proxy,
