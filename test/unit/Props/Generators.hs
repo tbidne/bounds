@@ -70,6 +70,7 @@ import GHC.Generics
   ( Associativity,
     DecidedStrictness,
     SourceStrictness,
+    SourceUnpackedness,
   )
 import Hedgehog (Gen)
 import Hedgehog.Gen (choice)
@@ -144,7 +145,6 @@ genBounded =
       pure $ MkBoundedType @CSize Proxy,
       pure $ MkBoundedType @CUChar Proxy,
       pure $ MkBoundedType @CUInt Proxy,
-      pure $ MkBoundedType @CUInt Proxy,
       pure $ MkBoundedType @CUIntMax Proxy,
       pure $ MkBoundedType @CUIntPtr Proxy,
       pure $ MkBoundedType @CULLong Proxy,
@@ -157,6 +157,7 @@ genBounded =
       pure $ MkBoundedType @Associativity Proxy,
       pure $ MkBoundedType @DecidedStrictness Proxy,
       pure $ MkBoundedType @SourceStrictness Proxy,
+      pure $ MkBoundedType @SourceUnpackedness Proxy,
       pure $ MkBoundedType @Int16 Proxy,
       pure $ MkBoundedType @Int32 Proxy,
       pure $ MkBoundedType @Int64 Proxy,
@@ -174,7 +175,6 @@ genBounded =
       pure $ MkBoundedType @CFsFilCnt Proxy,
       pure $ MkBoundedType @CGid Proxy,
       pure $ MkBoundedType @CId Proxy,
-      pure $ MkBoundedType @CIno Proxy,
       pure $ MkBoundedType @CIno Proxy,
       pure $ MkBoundedType @CKey Proxy,
       pure $ MkBoundedType @CMode Proxy,

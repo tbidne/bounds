@@ -77,6 +77,7 @@ import GHC.Generics
   ( Associativity,
     DecidedStrictness,
     SourceStrictness,
+    SourceUnpackedness,
   )
 import GHC.Natural (Natural)
 import System.Posix.Types
@@ -374,6 +375,12 @@ instance LowerBounded SourceStrictness
 
 -- | @since 0.1
 instance UpperBounded SourceStrictness
+
+-- | @since 0.1
+instance LowerBounded SourceUnpackedness
+
+-- | @since 0.1
+instance UpperBounded SourceUnpackedness
 
 -- | @since 0.1
 instance LowerBounded Int16
