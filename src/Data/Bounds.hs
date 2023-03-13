@@ -80,28 +80,7 @@ import GHC.Generics
     SourceUnpackedness,
   )
 import GHC.Natural (Natural)
-import System.Posix.Types
-  ( CBlkCnt,
-    CBlkSize,
-    CClockId,
-    CDev,
-    CFsBlkCnt,
-    CFsFilCnt,
-    CGid,
-    CId,
-    CIno,
-    CKey,
-    CMode,
-    CNfds,
-    CNlink,
-    COff,
-    CPid,
-    CRLim,
-    CSsize,
-    CTcflag,
-    CUid,
-    Fd,
-  )
+import System.Posix.Types qualified as Posix
 
 -- | Names the lower limit of a type. Types that also have a 'Bounded'
 -- instance should define @lowerBound === minBound@. This can be derived
@@ -436,125 +415,132 @@ instance LowerBounded Word8
 -- | @since 0.1
 instance UpperBounded Word8
 
+-- NOTE: GHC hides these types in System.Posix.Types behind flags that are
+-- specific to each type e.g. CBlkCnt is behind HTYPE_BLKCNT_T.
+-- These didn't appear to work here, so we just use a windows/no-windows check
+-- and hope that is good enough.
+
+#if !WINDOWS
 -- | @since 0.1
-instance LowerBounded CBlkCnt
+instance LowerBounded Posix.CBlkCnt
 
 -- | @since 0.1
-instance UpperBounded CBlkCnt
+instance UpperBounded Posix.CBlkCnt
 
 -- | @since 0.1
-instance LowerBounded CBlkSize
+instance LowerBounded Posix.CBlkSize
 
 -- | @since 0.1
-instance UpperBounded CBlkSize
+instance UpperBounded Posix.CBlkSize
 
 -- | @since 0.1
-instance LowerBounded CClockId
+instance LowerBounded Posix.CClockId
 
 -- | @since 0.1
-instance UpperBounded CClockId
+instance UpperBounded Posix.CClockId
 
 -- | @since 0.1
-instance LowerBounded CDev
+instance LowerBounded Posix.CDev
 
 -- | @since 0.1
-instance UpperBounded CDev
+instance UpperBounded Posix.CDev
 
 -- | @since 0.1
-instance LowerBounded CFsBlkCnt
+instance LowerBounded Posix.CFsBlkCnt
 
 -- | @since 0.1
-instance UpperBounded CFsBlkCnt
+instance UpperBounded Posix.CFsBlkCnt
 
 -- | @since 0.1
-instance LowerBounded CFsFilCnt
+instance LowerBounded Posix.CFsFilCnt
 
 -- | @since 0.1
-instance UpperBounded CFsFilCnt
+instance UpperBounded Posix.CFsFilCnt
 
 -- | @since 0.1
-instance LowerBounded CGid
+instance LowerBounded Posix.CGid
 
 -- | @since 0.1
-instance UpperBounded CGid
+instance UpperBounded Posix.CGid
 
 -- | @since 0.1
-instance LowerBounded CId
+instance LowerBounded Posix.CId
 
 -- | @since 0.1
-instance UpperBounded CId
+instance UpperBounded Posix.CId
 
 -- | @since 0.1
-instance LowerBounded CIno
+instance LowerBounded Posix.CIno
 
 -- | @since 0.1
-instance UpperBounded CIno
+instance UpperBounded Posix.CIno
 
 -- | @since 0.1
-instance LowerBounded CKey
+instance LowerBounded Posix.CKey
 
 -- | @since 0.1
-instance UpperBounded CKey
+instance UpperBounded Posix.CKey
 
 -- | @since 0.1
-instance LowerBounded CMode
+instance LowerBounded Posix.CMode
 
 -- | @since 0.1
-instance UpperBounded CMode
+instance UpperBounded Posix.CMode
 
 -- | @since 0.1
-instance LowerBounded CNfds
+instance LowerBounded Posix.CNfds
 
 -- | @since 0.1
-instance UpperBounded CNfds
+instance UpperBounded Posix.CNfds
 
 -- | @since 0.1
-instance LowerBounded CNlink
+instance LowerBounded Posix.CNlink
 
 -- | @since 0.1
-instance UpperBounded CNlink
+instance UpperBounded Posix.CNlink
 
 -- | @since 0.1
-instance LowerBounded COff
+instance LowerBounded Posix.COff
 
 -- | @since 0.1
-instance UpperBounded COff
+instance UpperBounded Posix.COff
 
 -- | @since 0.1
-instance LowerBounded CPid
+instance LowerBounded Posix.CPid
 
 -- | @since 0.1
-instance UpperBounded CPid
+instance UpperBounded Posix.CPid
 
 -- | @since 0.1
-instance LowerBounded CRLim
+instance LowerBounded Posix.CRLim
 
 -- | @since 0.1
-instance UpperBounded CRLim
+instance UpperBounded Posix.CRLim
 
 -- | @since 0.1
-instance LowerBounded CSsize
+instance LowerBounded Posix.CSsize
 
 -- | @since 0.1
-instance UpperBounded CSsize
+instance UpperBounded Posix.CSsize
 
 -- | @since 0.1
-instance LowerBounded CTcflag
+instance LowerBounded Posix.CTcflag
 
 -- | @since 0.1
-instance UpperBounded CTcflag
+instance UpperBounded Posix.CTcflag
 
 -- | @since 0.1
-instance LowerBounded CUid
+instance LowerBounded Posix.CUid
 
 -- | @since 0.1
-instance UpperBounded CUid
+instance UpperBounded Posix.CUid
+#endif
 
 -- | @since 0.1
-instance LowerBounded Fd
+instance LowerBounded Posix.Fd
 
 -- | @since 0.1
-instance UpperBounded Fd
+instance UpperBounded Posix.Fd
 
 -- | @since 0.1
 instance LowerBounded Ordering
