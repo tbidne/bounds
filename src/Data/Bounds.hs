@@ -420,7 +420,7 @@ instance UpperBounded Word8
 -- These didn't appear to work here, so we just use a windows/no-windows check
 -- and hope that is good enough.
 
-#ifndef mingw32_HOST_OS
+#if WINDOWS
 -- | @since 0.1
 instance LowerBounded Posix.CBlkCnt
 

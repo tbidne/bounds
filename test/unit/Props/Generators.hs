@@ -147,7 +147,7 @@ genBounded =
       pure $ MkBoundedType @Word32 Proxy,
       pure $ MkBoundedType @Word64 Proxy,
       pure $ MkBoundedType @Word8 Proxy,
-#ifndef mingw32_HOST_OS
+#if WINDOWS
       pure $ MkBoundedType @Posix.CBlkCnt Proxy,
       pure $ MkBoundedType @Posix.CBlkSize Proxy,
       pure $ MkBoundedType @Posix.CClockId Proxy,
