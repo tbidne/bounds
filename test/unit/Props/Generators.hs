@@ -101,6 +101,8 @@ instance Show BoundedType where
   show (MkBoundedType p) = "MkBoundedType " <> show p
   show (MkBoundedTypeNoEq p _) = "MkBoundedTypeNoEq " <> show p
 
+{- ORMOLU_DISABLE -}
+
 -- | Randomly generates a type that has Bounded and Lower/UpperBounded
 -- instances.
 --
@@ -207,6 +209,8 @@ genBounded =
       pure $ MkBoundedType @(Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool) Proxy
     ]
       <> bounded_4_16
+
+{- ORMOLU_ENABLE -}
 
 -- | Types that are only in base 4.16+
 --
