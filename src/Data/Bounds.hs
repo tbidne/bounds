@@ -38,7 +38,9 @@ import Data.Semigroup
     Sum (Sum),
     WrappedMonoid (WrapMonoid),
   )
-#if MIN_VERSION_base(4, 16, 0)
+#if MIN_VERSION_base(4, 18, 0)
+import Data.Tuple (Solo (MkSolo))
+#elif MIN_VERSION_base(4, 16, 0)
 import Data.Tuple (Solo (Solo))
 #endif
 import Data.Type.Coercion (Coercion)
@@ -711,7 +713,19 @@ deriving via a instance (LowerBounded a) => LowerBounded (Sum a)
 -- | @since 0.1
 deriving via a instance (UpperBounded a) => UpperBounded (Sum a)
 
-#if MIN_VERSION_base(4, 16, 0)
+#if MIN_VERSION_base(4, 18, 0)
+
+-- | @since 0.1
+instance LowerBounded a => LowerBounded (Solo a) where
+  lowerBound = MkSolo lowerBound
+  {-# INLINE lowerBound #-}
+
+-- | @since 0.1
+instance UpperBounded a => UpperBounded (Solo a) where
+  upperBound = MkSolo upperBound
+  {-# INLINE upperBound #-}
+
+#elif MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
 instance LowerBounded a => LowerBounded (Solo a) where
