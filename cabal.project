@@ -7,5 +7,7 @@ package bounds
     -Wmissing-home-modules -Wmissing-export-lists -Wpartial-fields
     -Wredundant-constraints -Wunused-packages -Wmissing-deriving-strategies
 
+allow-newer: hedgehog-1.2:template-haskell
+
 optimization: 2
 test-show-details: direct
