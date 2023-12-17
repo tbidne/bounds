@@ -4,7 +4,7 @@ version:            0.1
 license:            MIT
 license-file:       LICENSE
 tested-with:
-  GHC ==8.10.7 || ==9.0.2 || ==9.2.8 || ==9.4.6 || ==9.6.2
+  GHC ==8.10.7 || ==9.0.2 || ==9.2.8 || ==9.4.7 || ==9.6.3 || ==9.8.1
 
 copyright:          2022-2023 Thomas Bidne
 author:             Thomas Bidne
@@ -42,7 +42,7 @@ common common-lang
 library
   import:           common-lang
   exposed-modules:  Data.Bounds
-  build-depends:    base >=4.14.0.0 && <4.19
+  build-depends:    base >=4.14.0.0 && <4.20
   hs-source-dirs:   src
   default-language: Haskell2010
 
@@ -58,7 +58,7 @@ test-suite unit
     , base
     , bounds
     , hedgehog        >=1.0.2   && <1.5
-    , tasty           >=1.1.0.3 && <1.5
+    , tasty           >=1.1.0.3 && <1.6
     , tasty-hedgehog  >=1.0.1.0 && <1.5
 
   hs-source-dirs:   test/unit
