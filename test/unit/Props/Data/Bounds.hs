@@ -8,7 +8,7 @@ module Props.Data.Bounds
   )
 where
 
-import Data.Bounds (LowerBounded (..), UpperBounded (..))
+import Data.Bounds (LowerBounded (lowerBound), UpperBounded (upperBound))
 import Data.Typeable (Proxy, Typeable, typeOf)
 import Hedgehog
   ( Property,
@@ -20,7 +20,10 @@ import Hedgehog
     property,
     (===),
   )
-import Props.Generators (BoundedType (..), genBounded)
+import Props.Generators
+  ( BoundedType (MkBoundedType, MkBoundedTypeNoEq),
+    genBounded,
+  )
 import Test.Tasty (TestName, TestTree, testGroup)
 #if MIN_VERSION_tasty_hedgehog(1, 2, 0)
 import Test.Tasty.Hedgehog (testPropertyNamed)

@@ -35,7 +35,7 @@ import Data.Semigroup
 import Data.Tuple (Solo)
 #endif
 import Data.Type.Equality (type (:~:))
-import Data.Typeable (Proxy (..), Typeable, type (:~~:))
+import Data.Typeable (Proxy (Proxy), Typeable, type (:~~:))
 import Data.Word (Word16, Word32, Word64, Word8)
 import Foreign.C.Types
   ( CBool,
@@ -62,7 +62,7 @@ import Foreign.C.Types
 import Foreign.Ptr (IntPtr, WordPtr)
 import GHC.ByteOrder (ByteOrder)
 #if MIN_VERSION_base(4, 16, 0)
-import GHC.Exts (Levity (..), VecCount (..), VecElem (..))
+import GHC.Exts (Levity, VecCount, VecElem)
 #else
 import GHC.Exts (VecCount, VecElem)
 #endif
