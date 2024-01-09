@@ -10,7 +10,12 @@ module Props.Generators
 where
 
 import Control.Applicative (Const)
-import Data.Bounds (LowerBounded, UpperBounded)
+import Data.Bounds
+  ( AnyLowerBounded,
+    AnyUpperBounded,
+    LowerBounded,
+    UpperBounded,
+  )
 #if MIN_VERSION_base(4, 16, 0)
 import Data.Bits (And, Iff, Ior, Xor)
 #endif
@@ -84,14 +89,29 @@ data BoundedType where
   --
   -- @since 0.1
   MkBoundedType ::
-    (Bounded a, Eq a, LowerBounded a, Show a, Typeable a, UpperBounded a) =>
+    ( AnyLowerBounded a,
+      AnyUpperBounded a,
+      Bounded a,
+      Eq a,
+      LowerBounded a,
+      Show a,
+      Typeable a,
+      UpperBounded a
+    ) =>
     Proxy a ->
     BoundedType
   -- | Manually provide eq function when we do not have an Eq instance.
   --
   -- @since 0.1
   MkBoundedTypeNoEq ::
-    (Bounded a, LowerBounded a, Show a, Typeable a, UpperBounded a) =>
+    ( AnyLowerBounded a,
+      AnyUpperBounded a,
+      Bounded a,
+      LowerBounded a,
+      Show a,
+      Typeable a,
+      UpperBounded a
+    ) =>
     Proxy a ->
     (a -> a -> Bool) ->
     BoundedType

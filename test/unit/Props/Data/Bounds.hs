@@ -8,7 +8,12 @@ module Props.Data.Bounds
   )
 where
 
-import Data.Bounds (LowerBounded (lowerBound), UpperBounded (upperBound))
+import Data.Bounds
+  ( LowerBounded (lowerBound),
+    UpperBounded (upperBound),
+    someLowerBound,
+    someUpperBound,
+  )
 import Data.Typeable (Proxy, Typeable, typeOf)
 import Hedgehog
   ( Property,
@@ -55,6 +60,7 @@ maxBoundSynced =
           annotateShow $ maxBound @a
           annotateShow $ upperBound @a
           maxBound @a === upperBound
+          Just maxBound === someUpperBound @a
         MkBoundedTypeNoEq p@(_ :: Proxy a) eqFn -> do
           annotate $ showTy p
           annotateShow $ maxBound @a
@@ -74,6 +80,7 @@ minBoundSynced =
           annotateShow $ minBound @a
           annotateShow $ lowerBound @a
           minBound @a === lowerBound
+          Just minBound === someLowerBound @a
         MkBoundedTypeNoEq p@(_ :: Proxy a) eqFn -> do
           annotate $ showTy p
           annotateShow $ minBound @a
