@@ -19,7 +19,8 @@ package bounds
     -Wunused-type-patterns
     -Wno-unticked-promoted-constructors
 
-allow-newer: hedgehog-1.2:template-haskell
+allow-newer: tasty-hedgehog:base
+allow-newer: hedgehog:template-haskell
 
 optimization: 2
 test-show-details: direct
