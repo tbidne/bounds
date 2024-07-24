@@ -11,9 +11,9 @@ where
 
 import Control.Applicative (Const)
 import Data.Bounds
-  ( AnyLowerBounded,
-    AnyUpperBounded,
-    LowerBounded,
+  ( LowerBounded,
+    MaybeLowerBounded,
+    MaybeUpperBounded,
     UpperBounded,
   )
 #if MIN_VERSION_base(4, 16, 0)
@@ -89,11 +89,11 @@ data BoundedType where
   --
   -- @since 0.1
   MkBoundedType ::
-    ( AnyLowerBounded a,
-      AnyUpperBounded a,
-      Bounded a,
+    ( Bounded a,
       Eq a,
       LowerBounded a,
+      MaybeLowerBounded a,
+      MaybeUpperBounded a,
       Show a,
       Typeable a,
       UpperBounded a
@@ -104,10 +104,10 @@ data BoundedType where
   --
   -- @since 0.1
   MkBoundedTypeNoEq ::
-    ( AnyLowerBounded a,
-      AnyUpperBounded a,
-      Bounded a,
+    ( Bounded a,
       LowerBounded a,
+      MaybeLowerBounded a,
+      MaybeUpperBounded a,
       Show a,
       Typeable a,
       UpperBounded a

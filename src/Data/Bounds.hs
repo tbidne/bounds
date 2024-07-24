@@ -13,9 +13,9 @@ module Data.Bounds
     UpperBoundless,
     Boundless,
 
-    -- * AnyBounded
-    AnyLowerBounded (..),
-    AnyUpperBounded (..),
+    -- * MaybeBounded
+    MaybeLowerBounded (..),
+    MaybeUpperBounded (..),
   )
 where
 
@@ -93,48 +93,48 @@ import System.Posix.Types qualified as Posix
 -- (e.g. Integer) return Nothing.
 --
 -- @since 0.1
-class AnyLowerBounded a where
+class MaybeLowerBounded a where
   -- | Retrieves the lower bound.
   --
   -- @since 0.1
-  someLowerBound :: Maybe a
-  default someLowerBound :: (LowerBounded a) => Maybe a
-  someLowerBound = Just lowerBound
-  {-# INLINE someLowerBound #-}
+  maybeLowerBound :: Maybe a
+  default maybeLowerBound :: (LowerBounded a) => Maybe a
+  maybeLowerBound = Just lowerBound
+  {-# INLINE maybeLowerBound #-}
 
 -- | @since 0.1
-instance AnyLowerBounded Integer where
-  someLowerBound = Nothing
-  {-# INLINE someLowerBound #-}
+instance MaybeLowerBounded Integer where
+  maybeLowerBound = Nothing
+  {-# INLINE maybeLowerBound #-}
 
 -- | @since 0.1
-instance AnyLowerBounded Natural where
-  someLowerBound = Just 0
-  {-# INLINE someLowerBound #-}
+instance MaybeLowerBounded Natural where
+  maybeLowerBound = Just 0
+  {-# INLINE maybeLowerBound #-}
 
 -- | Class for types that may have an upper bound. The intention is that
 -- bounded types (e.g. Int8) return @Just maxBound@ whereas unbounded types
 -- (e.g. Integer) return Nothing.
 --
 -- @since 0.1
-class AnyUpperBounded a where
+class MaybeUpperBounded a where
   -- | Retrieves the upper bound.
   --
   -- @since 0.1
-  someUpperBound :: Maybe a
-  default someUpperBound :: (UpperBounded a) => Maybe a
-  someUpperBound = Just upperBound
-  {-# INLINE someUpperBound #-}
+  maybeUpperBound :: Maybe a
+  default maybeUpperBound :: (UpperBounded a) => Maybe a
+  maybeUpperBound = Just upperBound
+  {-# INLINE maybeUpperBound #-}
 
 -- | @since 0.1
-instance AnyUpperBounded Integer where
-  someUpperBound = Nothing
-  {-# INLINE someUpperBound #-}
+instance MaybeUpperBounded Integer where
+  maybeUpperBound = Nothing
+  {-# INLINE maybeUpperBound #-}
 
 -- | @since 0.1
-instance AnyUpperBounded Natural where
-  someUpperBound = Nothing
-  {-# INLINE someUpperBound #-}
+instance MaybeUpperBounded Natural where
+  maybeUpperBound = Nothing
+  {-# INLINE maybeUpperBound #-}
 
 -- | Names the lower limit of a type. Types that also have a 'Bounded'
 -- instance should define @lowerBound === minBound@. This can be derived
@@ -234,9 +234,9 @@ newtype Bounds a = MkBounds
     )
   deriving anyclass
     ( -- | @since 0.1
-      AnyLowerBounded,
+      MaybeLowerBounded,
       -- | @since 0.1
-      AnyUpperBounded,
+      MaybeUpperBounded,
       -- | @since 0.1
       LowerBounded,
       -- | @since 0.1
@@ -248,10 +248,10 @@ newtype Bounds a = MkBounds
 --------------------
 
 -- | @since 0.1
-instance AnyLowerBounded All
+instance MaybeLowerBounded All
 
 -- | @since 0.1
-instance AnyUpperBounded All
+instance MaybeUpperBounded All
 
 -- | @since 0.1
 instance LowerBounded All
@@ -266,16 +266,16 @@ instance LowerBounded Any
 instance UpperBounded Any
 
 -- | @since 0.1
-instance AnyLowerBounded Any
+instance MaybeLowerBounded Any
 
 -- | @since 0.1
-instance AnyUpperBounded Any
+instance MaybeUpperBounded Any
 
 -- | @since 0.1
-instance AnyLowerBounded CBool
+instance MaybeLowerBounded CBool
 
 -- | @since 0.1
-instance AnyUpperBounded CBool
+instance MaybeUpperBounded CBool
 
 -- | @since 0.1
 instance LowerBounded CBool
@@ -284,10 +284,10 @@ instance LowerBounded CBool
 instance UpperBounded CBool
 
 -- | @since 0.1
-instance AnyLowerBounded CChar
+instance MaybeLowerBounded CChar
 
 -- | @since 0.1
-instance AnyUpperBounded CChar
+instance MaybeUpperBounded CChar
 
 -- | @since 0.1
 instance LowerBounded CChar
@@ -296,10 +296,10 @@ instance LowerBounded CChar
 instance UpperBounded CChar
 
 -- | @since 0.1
-instance AnyLowerBounded CInt
+instance MaybeLowerBounded CInt
 
 -- | @since 0.1
-instance AnyUpperBounded CInt
+instance MaybeUpperBounded CInt
 
 -- | @since 0.1
 instance LowerBounded CInt
@@ -308,10 +308,10 @@ instance LowerBounded CInt
 instance UpperBounded CInt
 
 -- | @since 0.1
-instance AnyLowerBounded CIntMax
+instance MaybeLowerBounded CIntMax
 
 -- | @since 0.1
-instance AnyUpperBounded CIntMax
+instance MaybeUpperBounded CIntMax
 
 -- | @since 0.1
 instance LowerBounded CIntMax
@@ -320,10 +320,10 @@ instance LowerBounded CIntMax
 instance UpperBounded CIntMax
 
 -- | @since 0.1
-instance AnyUpperBounded CIntPtr
+instance MaybeUpperBounded CIntPtr
 
 -- | @since 0.1
-instance AnyLowerBounded CIntPtr
+instance MaybeLowerBounded CIntPtr
 
 -- | @since 0.1
 instance UpperBounded CIntPtr
@@ -332,10 +332,10 @@ instance UpperBounded CIntPtr
 instance LowerBounded CIntPtr
 
 -- | @since 0.1
-instance AnyLowerBounded CLLong
+instance MaybeLowerBounded CLLong
 
 -- | @since 0.1
-instance AnyUpperBounded CLLong
+instance MaybeUpperBounded CLLong
 
 -- | @since 0.1
 instance LowerBounded CLLong
@@ -344,10 +344,10 @@ instance LowerBounded CLLong
 instance UpperBounded CLLong
 
 -- | @since 0.1
-instance AnyLowerBounded CLong
+instance MaybeLowerBounded CLong
 
 -- | @since 0.1
-instance AnyUpperBounded CLong
+instance MaybeUpperBounded CLong
 
 -- | @since 0.1
 instance LowerBounded CLong
@@ -356,10 +356,10 @@ instance LowerBounded CLong
 instance UpperBounded CLong
 
 -- | @since 0.1
-instance AnyLowerBounded CPtrdiff
+instance MaybeLowerBounded CPtrdiff
 
 -- | @since 0.1
-instance AnyUpperBounded CPtrdiff
+instance MaybeUpperBounded CPtrdiff
 
 -- | @since 0.1
 instance LowerBounded CPtrdiff
@@ -368,10 +368,10 @@ instance LowerBounded CPtrdiff
 instance UpperBounded CPtrdiff
 
 -- | @since 0.1
-instance AnyLowerBounded CSChar
+instance MaybeLowerBounded CSChar
 
 -- | @since 0.1
-instance AnyUpperBounded CSChar
+instance MaybeUpperBounded CSChar
 
 -- | @since 0.1
 instance LowerBounded CSChar
@@ -380,10 +380,10 @@ instance LowerBounded CSChar
 instance UpperBounded CSChar
 
 -- | @since 0.1
-instance AnyLowerBounded CShort
+instance MaybeLowerBounded CShort
 
 -- | @since 0.1
-instance AnyUpperBounded CShort
+instance MaybeUpperBounded CShort
 
 -- | @since 0.1
 instance LowerBounded CShort
@@ -392,10 +392,10 @@ instance LowerBounded CShort
 instance UpperBounded CShort
 
 -- | @since 0.1
-instance AnyLowerBounded CSigAtomic
+instance MaybeLowerBounded CSigAtomic
 
 -- | @since 0.1
-instance AnyUpperBounded CSigAtomic
+instance MaybeUpperBounded CSigAtomic
 
 -- | @since 0.1
 instance LowerBounded CSigAtomic
@@ -404,10 +404,10 @@ instance LowerBounded CSigAtomic
 instance UpperBounded CSigAtomic
 
 -- | @since 0.1
-instance AnyLowerBounded CSize
+instance MaybeLowerBounded CSize
 
 -- | @since 0.1
-instance AnyUpperBounded CSize
+instance MaybeUpperBounded CSize
 
 -- | @since 0.1
 instance LowerBounded CSize
@@ -416,10 +416,10 @@ instance LowerBounded CSize
 instance UpperBounded CSize
 
 -- | @since 0.1
-instance AnyLowerBounded CUChar
+instance MaybeLowerBounded CUChar
 
 -- | @since 0.1
-instance AnyUpperBounded CUChar
+instance MaybeUpperBounded CUChar
 
 -- | @since 0.1
 instance LowerBounded CUChar
@@ -428,10 +428,10 @@ instance LowerBounded CUChar
 instance UpperBounded CUChar
 
 -- | @since 0.1
-instance AnyLowerBounded CUInt
+instance MaybeLowerBounded CUInt
 
 -- | @since 0.1
-instance AnyUpperBounded CUInt
+instance MaybeUpperBounded CUInt
 
 -- | @since 0.1
 instance LowerBounded CUInt
@@ -440,10 +440,10 @@ instance LowerBounded CUInt
 instance UpperBounded CUInt
 
 -- | @since 0.1
-instance AnyLowerBounded CUIntMax
+instance MaybeLowerBounded CUIntMax
 
 -- | @since 0.1
-instance AnyUpperBounded CUIntMax
+instance MaybeUpperBounded CUIntMax
 
 -- | @since 0.1
 instance LowerBounded CUIntMax
@@ -452,10 +452,10 @@ instance LowerBounded CUIntMax
 instance UpperBounded CUIntMax
 
 -- | @since 0.1
-instance AnyLowerBounded CUIntPtr
+instance MaybeLowerBounded CUIntPtr
 
 -- | @since 0.1
-instance AnyUpperBounded CUIntPtr
+instance MaybeUpperBounded CUIntPtr
 
 -- | @since 0.1
 instance LowerBounded CUIntPtr
@@ -464,10 +464,10 @@ instance LowerBounded CUIntPtr
 instance UpperBounded CUIntPtr
 
 -- | @since 0.1
-instance AnyLowerBounded CULLong
+instance MaybeLowerBounded CULLong
 
 -- | @since 0.1
-instance AnyUpperBounded CULLong
+instance MaybeUpperBounded CULLong
 
 -- | @since 0.1
 instance LowerBounded CULLong
@@ -476,10 +476,10 @@ instance LowerBounded CULLong
 instance UpperBounded CULLong
 
 -- | @since 0.1
-instance AnyLowerBounded CULong
+instance MaybeLowerBounded CULong
 
 -- | @since 0.1
-instance AnyUpperBounded CULong
+instance MaybeUpperBounded CULong
 
 -- | @since 0.1
 instance LowerBounded CULong
@@ -488,10 +488,10 @@ instance LowerBounded CULong
 instance UpperBounded CULong
 
 -- | @since 0.1
-instance AnyLowerBounded CUShort
+instance MaybeLowerBounded CUShort
 
 -- | @since 0.1
-instance AnyUpperBounded CUShort
+instance MaybeUpperBounded CUShort
 
 -- | @since 0.1
 instance LowerBounded CUShort
@@ -500,10 +500,10 @@ instance LowerBounded CUShort
 instance UpperBounded CUShort
 
 -- | @since 0.1
-instance AnyLowerBounded CWchar
+instance MaybeLowerBounded CWchar
 
 -- | @since 0.1
-instance AnyUpperBounded CWchar
+instance MaybeUpperBounded CWchar
 
 -- | @since 0.1
 instance LowerBounded CWchar
@@ -512,10 +512,10 @@ instance LowerBounded CWchar
 instance UpperBounded CWchar
 
 -- | @since 0.1
-instance AnyLowerBounded IntPtr
+instance MaybeLowerBounded IntPtr
 
 -- | @since 0.1
-instance AnyUpperBounded IntPtr
+instance MaybeUpperBounded IntPtr
 
 -- | @since 0.1
 instance LowerBounded IntPtr
@@ -524,10 +524,10 @@ instance LowerBounded IntPtr
 instance UpperBounded IntPtr
 
 -- | @since 0.1
-instance AnyLowerBounded WordPtr
+instance MaybeLowerBounded WordPtr
 
 -- | @since 0.1
-instance AnyUpperBounded WordPtr
+instance MaybeUpperBounded WordPtr
 
 -- | @since 0.1
 instance LowerBounded WordPtr
@@ -536,10 +536,10 @@ instance LowerBounded WordPtr
 instance UpperBounded WordPtr
 
 -- | @since 0.1
-instance AnyLowerBounded ByteOrder
+instance MaybeLowerBounded ByteOrder
 
 -- | @since 0.1
-instance AnyUpperBounded ByteOrder
+instance MaybeUpperBounded ByteOrder
 
 -- | @since 0.1
 instance LowerBounded ByteOrder
@@ -548,10 +548,10 @@ instance LowerBounded ByteOrder
 instance UpperBounded ByteOrder
 
 -- | @since 0.1
-instance AnyLowerBounded Associativity
+instance MaybeLowerBounded Associativity
 
 -- | @since 0.1
-instance AnyUpperBounded Associativity
+instance MaybeUpperBounded Associativity
 
 -- | @since 0.1
 instance LowerBounded Associativity
@@ -560,10 +560,10 @@ instance LowerBounded Associativity
 instance UpperBounded Associativity
 
 -- | @since 0.1
-instance AnyLowerBounded DecidedStrictness
+instance MaybeLowerBounded DecidedStrictness
 
 -- | @since 0.1
-instance AnyUpperBounded DecidedStrictness
+instance MaybeUpperBounded DecidedStrictness
 
 -- | @since 0.1
 instance LowerBounded DecidedStrictness
@@ -572,10 +572,10 @@ instance LowerBounded DecidedStrictness
 instance UpperBounded DecidedStrictness
 
 -- | @since 0.1
-instance AnyLowerBounded SourceStrictness
+instance MaybeLowerBounded SourceStrictness
 
 -- | @since 0.1
-instance AnyUpperBounded SourceStrictness
+instance MaybeUpperBounded SourceStrictness
 
 -- | @since 0.1
 instance LowerBounded SourceStrictness
@@ -584,10 +584,10 @@ instance LowerBounded SourceStrictness
 instance UpperBounded SourceStrictness
 
 -- | @since 0.1
-instance AnyLowerBounded SourceUnpackedness
+instance MaybeLowerBounded SourceUnpackedness
 
 -- | @since 0.1
-instance AnyUpperBounded SourceUnpackedness
+instance MaybeUpperBounded SourceUnpackedness
 
 -- | @since 0.1
 instance LowerBounded SourceUnpackedness
@@ -596,10 +596,10 @@ instance LowerBounded SourceUnpackedness
 instance UpperBounded SourceUnpackedness
 
 -- | @since 0.1
-instance AnyLowerBounded Int16
+instance MaybeLowerBounded Int16
 
 -- | @since 0.1
-instance AnyUpperBounded Int16
+instance MaybeUpperBounded Int16
 
 -- | @since 0.1
 instance LowerBounded Int16
@@ -608,10 +608,10 @@ instance LowerBounded Int16
 instance UpperBounded Int16
 
 -- | @since 0.1
-instance AnyLowerBounded Int32
+instance MaybeLowerBounded Int32
 
 -- | @since 0.1
-instance AnyUpperBounded Int32
+instance MaybeUpperBounded Int32
 
 -- | @since 0.1
 instance LowerBounded Int32
@@ -620,10 +620,10 @@ instance LowerBounded Int32
 instance UpperBounded Int32
 
 -- | @since 0.1
-instance AnyLowerBounded Int64
+instance MaybeLowerBounded Int64
 
 -- | @since 0.1
-instance AnyUpperBounded Int64
+instance MaybeUpperBounded Int64
 
 -- | @since 0.1
 instance LowerBounded Int64
@@ -632,10 +632,10 @@ instance LowerBounded Int64
 instance UpperBounded Int64
 
 -- | @since 0.1
-instance AnyLowerBounded Int8
+instance MaybeLowerBounded Int8
 
 -- | @since 0.1
-instance AnyUpperBounded Int8
+instance MaybeUpperBounded Int8
 
 -- | @since 0.1
 instance LowerBounded Int8
@@ -644,10 +644,10 @@ instance LowerBounded Int8
 instance UpperBounded Int8
 
 -- | @since 0.1
-instance AnyLowerBounded GeneralCategory
+instance MaybeLowerBounded GeneralCategory
 
 -- | @since 0.1
-instance AnyUpperBounded GeneralCategory
+instance MaybeUpperBounded GeneralCategory
 
 -- | @since 0.1
 instance LowerBounded GeneralCategory
@@ -656,10 +656,10 @@ instance LowerBounded GeneralCategory
 instance UpperBounded GeneralCategory
 
 -- | @since 0.1
-instance AnyLowerBounded Word16
+instance MaybeLowerBounded Word16
 
 -- | @since 0.1
-instance AnyUpperBounded Word16
+instance MaybeUpperBounded Word16
 
 -- | @since 0.1
 instance LowerBounded Word16
@@ -668,10 +668,10 @@ instance LowerBounded Word16
 instance UpperBounded Word16
 
 -- | @since 0.1
-instance AnyLowerBounded Word32
+instance MaybeLowerBounded Word32
 
 -- | @since 0.1
-instance AnyUpperBounded Word32
+instance MaybeUpperBounded Word32
 
 -- | @since 0.1
 instance LowerBounded Word32
@@ -680,10 +680,10 @@ instance LowerBounded Word32
 instance UpperBounded Word32
 
 -- | @since 0.1
-instance AnyLowerBounded Word64
+instance MaybeLowerBounded Word64
 
 -- | @since 0.1
-instance AnyUpperBounded Word64
+instance MaybeUpperBounded Word64
 
 -- | @since 0.1
 instance LowerBounded Word64
@@ -692,10 +692,10 @@ instance LowerBounded Word64
 instance UpperBounded Word64
 
 -- | @since 0.1
-instance AnyLowerBounded Word8
+instance MaybeLowerBounded Word8
 
 -- | @since 0.1
-instance AnyUpperBounded Word8
+instance MaybeUpperBounded Word8
 
 -- | @since 0.1
 instance LowerBounded Word8
@@ -710,10 +710,10 @@ instance UpperBounded Word8
 
 #if !WINDOWS
 -- | @since 0.1
-instance AnyLowerBounded Posix.CBlkCnt
+instance MaybeLowerBounded Posix.CBlkCnt
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CBlkCnt
+instance MaybeUpperBounded Posix.CBlkCnt
 
 -- | @since 0.1
 instance LowerBounded Posix.CBlkCnt
@@ -722,10 +722,10 @@ instance LowerBounded Posix.CBlkCnt
 instance UpperBounded Posix.CBlkCnt
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CBlkSize
+instance MaybeLowerBounded Posix.CBlkSize
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CBlkSize
+instance MaybeUpperBounded Posix.CBlkSize
 
 -- | @since 0.1
 instance LowerBounded Posix.CBlkSize
@@ -734,10 +734,10 @@ instance LowerBounded Posix.CBlkSize
 instance UpperBounded Posix.CBlkSize
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CClockId
+instance MaybeLowerBounded Posix.CClockId
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CClockId
+instance MaybeUpperBounded Posix.CClockId
 
 -- | @since 0.1
 instance LowerBounded Posix.CClockId
@@ -746,10 +746,10 @@ instance LowerBounded Posix.CClockId
 instance UpperBounded Posix.CClockId
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CDev
+instance MaybeLowerBounded Posix.CDev
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CDev
+instance MaybeUpperBounded Posix.CDev
 
 -- | @since 0.1
 instance LowerBounded Posix.CDev
@@ -758,10 +758,10 @@ instance LowerBounded Posix.CDev
 instance UpperBounded Posix.CDev
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CFsBlkCnt
+instance MaybeLowerBounded Posix.CFsBlkCnt
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CFsBlkCnt
+instance MaybeUpperBounded Posix.CFsBlkCnt
 
 -- | @since 0.1
 instance LowerBounded Posix.CFsBlkCnt
@@ -770,10 +770,10 @@ instance LowerBounded Posix.CFsBlkCnt
 instance UpperBounded Posix.CFsBlkCnt
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CFsFilCnt
+instance MaybeLowerBounded Posix.CFsFilCnt
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CFsFilCnt
+instance MaybeUpperBounded Posix.CFsFilCnt
 
 -- | @since 0.1
 instance LowerBounded Posix.CFsFilCnt
@@ -782,10 +782,10 @@ instance LowerBounded Posix.CFsFilCnt
 instance UpperBounded Posix.CFsFilCnt
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CGid
+instance MaybeLowerBounded Posix.CGid
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CGid
+instance MaybeUpperBounded Posix.CGid
 
 -- | @since 0.1
 instance LowerBounded Posix.CGid
@@ -794,10 +794,10 @@ instance LowerBounded Posix.CGid
 instance UpperBounded Posix.CGid
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CId
+instance MaybeLowerBounded Posix.CId
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CId
+instance MaybeUpperBounded Posix.CId
 
 -- | @since 0.1
 instance LowerBounded Posix.CId
@@ -806,10 +806,10 @@ instance LowerBounded Posix.CId
 instance UpperBounded Posix.CId
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CIno
+instance MaybeLowerBounded Posix.CIno
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CIno
+instance MaybeUpperBounded Posix.CIno
 
 -- | @since 0.1
 instance LowerBounded Posix.CIno
@@ -818,10 +818,10 @@ instance LowerBounded Posix.CIno
 instance UpperBounded Posix.CIno
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CKey
+instance MaybeLowerBounded Posix.CKey
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CKey
+instance MaybeUpperBounded Posix.CKey
 
 -- | @since 0.1
 instance LowerBounded Posix.CKey
@@ -830,10 +830,10 @@ instance LowerBounded Posix.CKey
 instance UpperBounded Posix.CKey
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CMode
+instance MaybeLowerBounded Posix.CMode
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CMode
+instance MaybeUpperBounded Posix.CMode
 
 -- | @since 0.1
 instance LowerBounded Posix.CMode
@@ -842,10 +842,10 @@ instance LowerBounded Posix.CMode
 instance UpperBounded Posix.CMode
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CNfds
+instance MaybeLowerBounded Posix.CNfds
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CNfds
+instance MaybeUpperBounded Posix.CNfds
 
 -- | @since 0.1
 instance LowerBounded Posix.CNfds
@@ -854,10 +854,10 @@ instance LowerBounded Posix.CNfds
 instance UpperBounded Posix.CNfds
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CNlink
+instance MaybeLowerBounded Posix.CNlink
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CNlink
+instance MaybeUpperBounded Posix.CNlink
 
 -- | @since 0.1
 instance LowerBounded Posix.CNlink
@@ -866,10 +866,10 @@ instance LowerBounded Posix.CNlink
 instance UpperBounded Posix.CNlink
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.COff
+instance MaybeLowerBounded Posix.COff
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.COff
+instance MaybeUpperBounded Posix.COff
 
 -- | @since 0.1
 instance LowerBounded Posix.COff
@@ -878,10 +878,10 @@ instance LowerBounded Posix.COff
 instance UpperBounded Posix.COff
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CPid
+instance MaybeLowerBounded Posix.CPid
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CPid
+instance MaybeUpperBounded Posix.CPid
 
 -- | @since 0.1
 instance LowerBounded Posix.CPid
@@ -890,10 +890,10 @@ instance LowerBounded Posix.CPid
 instance UpperBounded Posix.CPid
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CRLim
+instance MaybeLowerBounded Posix.CRLim
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CRLim
+instance MaybeUpperBounded Posix.CRLim
 
 -- | @since 0.1
 instance LowerBounded Posix.CRLim
@@ -902,10 +902,10 @@ instance LowerBounded Posix.CRLim
 instance UpperBounded Posix.CRLim
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CSsize
+instance MaybeLowerBounded Posix.CSsize
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CSsize
+instance MaybeUpperBounded Posix.CSsize
 
 -- | @since 0.1
 instance LowerBounded Posix.CSsize
@@ -914,10 +914,10 @@ instance LowerBounded Posix.CSsize
 instance UpperBounded Posix.CSsize
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CTcflag
+instance MaybeLowerBounded Posix.CTcflag
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CTcflag
+instance MaybeUpperBounded Posix.CTcflag
 
 -- | @since 0.1
 instance LowerBounded Posix.CTcflag
@@ -926,10 +926,10 @@ instance LowerBounded Posix.CTcflag
 instance UpperBounded Posix.CTcflag
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.CUid
+instance MaybeLowerBounded Posix.CUid
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.CUid
+instance MaybeUpperBounded Posix.CUid
 
 -- | @since 0.1
 instance LowerBounded Posix.CUid
@@ -939,10 +939,10 @@ instance UpperBounded Posix.CUid
 #endif
 
 -- | @since 0.1
-instance AnyLowerBounded Posix.Fd
+instance MaybeLowerBounded Posix.Fd
 
 -- | @since 0.1
-instance AnyUpperBounded Posix.Fd
+instance MaybeUpperBounded Posix.Fd
 
 -- | @since 0.1
 instance LowerBounded Posix.Fd
@@ -951,10 +951,10 @@ instance LowerBounded Posix.Fd
 instance UpperBounded Posix.Fd
 
 -- | @since 0.1
-instance AnyLowerBounded Ordering
+instance MaybeLowerBounded Ordering
 
 -- | @since 0.1
-instance AnyUpperBounded Ordering
+instance MaybeUpperBounded Ordering
 
 -- | @since 0.1
 instance LowerBounded Ordering
@@ -963,10 +963,10 @@ instance LowerBounded Ordering
 instance UpperBounded Ordering
 
 -- | @since 0.1
-instance AnyLowerBounded ()
+instance MaybeLowerBounded ()
 
 -- | @since 0.1
-instance AnyUpperBounded ()
+instance MaybeUpperBounded ()
 
 -- | @since 0.1
 instance LowerBounded ()
@@ -975,10 +975,10 @@ instance LowerBounded ()
 instance UpperBounded ()
 
 -- | @since 0.1
-instance AnyLowerBounded Bool
+instance MaybeLowerBounded Bool
 
 -- | @since 0.1
-instance AnyUpperBounded Bool
+instance MaybeUpperBounded Bool
 
 -- | @since 0.1
 instance LowerBounded Bool
@@ -987,10 +987,10 @@ instance LowerBounded Bool
 instance UpperBounded Bool
 
 -- | @since 0.1
-instance AnyLowerBounded Char
+instance MaybeLowerBounded Char
 
 -- | @since 0.1
-instance AnyUpperBounded Char
+instance MaybeUpperBounded Char
 
 -- | @since 0.1
 instance LowerBounded Char
@@ -999,10 +999,10 @@ instance LowerBounded Char
 instance UpperBounded Char
 
 -- | @since 0.1
-instance AnyLowerBounded Int
+instance MaybeLowerBounded Int
 
 -- | @since 0.1
-instance AnyUpperBounded Int
+instance MaybeUpperBounded Int
 
 -- | @since 0.1
 instance LowerBounded Int
@@ -1013,10 +1013,10 @@ instance UpperBounded Int
 #if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
-instance AnyLowerBounded Levity
+instance MaybeLowerBounded Levity
 
 -- | @since 0.1
-instance AnyUpperBounded Levity
+instance MaybeUpperBounded Levity
 
 -- | @since 0.1
 instance LowerBounded Levity
@@ -1027,10 +1027,10 @@ instance UpperBounded Levity
 #endif
 
 -- | @since 0.1
-instance AnyLowerBounded VecCount
+instance MaybeLowerBounded VecCount
 
 -- | @since 0.1
-instance AnyUpperBounded VecCount
+instance MaybeUpperBounded VecCount
 
 -- | @since 0.1
 instance LowerBounded VecCount
@@ -1039,10 +1039,10 @@ instance LowerBounded VecCount
 instance UpperBounded VecCount
 
 -- | @since 0.1
-instance AnyLowerBounded VecElem
+instance MaybeLowerBounded VecElem
 
 -- | @since 0.1
-instance AnyUpperBounded VecElem
+instance MaybeUpperBounded VecElem
 
 -- | @since 0.1
 instance LowerBounded VecElem
@@ -1051,10 +1051,10 @@ instance LowerBounded VecElem
 instance UpperBounded VecElem
 
 -- | @since 0.1
-instance AnyLowerBounded Word
+instance MaybeLowerBounded Word
 
 -- | @since 0.1
-instance AnyUpperBounded Word
+instance MaybeUpperBounded Word
 
 -- | @since 0.1
 instance LowerBounded Word
@@ -1065,10 +1065,10 @@ instance UpperBounded Word
 #if MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
-instance LowerBounded a => AnyLowerBounded (And a)
+instance LowerBounded a => MaybeLowerBounded (And a)
 
 -- | @since 0.1
-instance UpperBounded a => AnyUpperBounded (And a)
+instance UpperBounded a => MaybeUpperBounded (And a)
 
 -- | @since 0.1
 deriving via a instance LowerBounded a => LowerBounded (And a)
@@ -1077,10 +1077,10 @@ deriving via a instance LowerBounded a => LowerBounded (And a)
 deriving via a instance UpperBounded a => UpperBounded (And a)
 
 -- | @since 0.1
-instance LowerBounded a => AnyLowerBounded (Iff a)
+instance LowerBounded a => MaybeLowerBounded (Iff a)
 
 -- | @since 0.1
-instance UpperBounded a => AnyUpperBounded (Iff a)
+instance UpperBounded a => MaybeUpperBounded (Iff a)
 
 -- | @since 0.1
 deriving via a instance LowerBounded a => LowerBounded (Iff a)
@@ -1089,10 +1089,10 @@ deriving via a instance LowerBounded a => LowerBounded (Iff a)
 deriving via a instance UpperBounded a => UpperBounded (Iff a)
 
 -- | @since 0.1
-instance LowerBounded a => AnyLowerBounded (Ior a)
+instance LowerBounded a => MaybeLowerBounded (Ior a)
 
 -- | @since 0.1
-instance UpperBounded a => AnyUpperBounded (Ior a)
+instance UpperBounded a => MaybeUpperBounded (Ior a)
 
 -- | @since 0.1
 deriving via a instance LowerBounded a => LowerBounded (Ior a)
@@ -1101,10 +1101,10 @@ deriving via a instance LowerBounded a => LowerBounded (Ior a)
 deriving via a instance UpperBounded a => UpperBounded (Ior a)
 
 -- | @since 0.1
-instance LowerBounded a => AnyLowerBounded (Xor a)
+instance LowerBounded a => MaybeLowerBounded (Xor a)
 
 -- | @since 0.1
-instance UpperBounded a => AnyUpperBounded (Xor a)
+instance UpperBounded a => MaybeUpperBounded (Xor a)
 
 -- | @since 0.1
 deriving via a instance LowerBounded a => LowerBounded (Xor a)
@@ -1115,10 +1115,10 @@ deriving via a instance UpperBounded a => UpperBounded (Xor a)
 #endif
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Identity a)
+instance (LowerBounded a) => MaybeLowerBounded (Identity a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Identity a)
+instance (UpperBounded a) => MaybeUpperBounded (Identity a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Identity a)
@@ -1129,10 +1129,10 @@ deriving via a instance (UpperBounded a) => UpperBounded (Identity a)
 #if !MIN_VERSION_base(4, 15, 0)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Down a)
+instance (LowerBounded a) => MaybeLowerBounded (Down a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Down a)
+instance (UpperBounded a) => MaybeUpperBounded (Down a)
 
 -- NB. For GHC < 9, Bounded Down is derived. This means that min/maxBound
 -- are not flipped, which is presumably not what we want. However,
@@ -1148,10 +1148,10 @@ deriving via a instance UpperBounded a => UpperBounded (Down a)
 #else
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyLowerBounded (Down a)
+instance (UpperBounded a) => MaybeLowerBounded (Down a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyUpperBounded (Down a)
+instance (LowerBounded a) => MaybeUpperBounded (Down a)
 
 -- For GHC >= 9, Bounded Down correctly flipped
 
@@ -1168,10 +1168,10 @@ instance LowerBounded a => UpperBounded (Down a) where
 #endif
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (First a)
+instance (LowerBounded a) => MaybeLowerBounded (First a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (First a)
+instance (UpperBounded a) => MaybeUpperBounded (First a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (First a)
@@ -1180,10 +1180,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (First a)
 deriving via a instance (UpperBounded a) => UpperBounded (First a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Last a)
+instance (LowerBounded a) => MaybeLowerBounded (Last a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Last a)
+instance (UpperBounded a) => MaybeUpperBounded (Last a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Last a)
@@ -1192,10 +1192,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (Last a)
 deriving via a instance (UpperBounded a) => UpperBounded (Last a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Max a)
+instance (LowerBounded a) => MaybeLowerBounded (Max a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Max a)
+instance (UpperBounded a) => MaybeUpperBounded (Max a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Max a)
@@ -1204,10 +1204,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (Max a)
 deriving via a instance (UpperBounded a) => UpperBounded (Max a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Min a)
+instance (LowerBounded a) => MaybeLowerBounded (Min a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Min a)
+instance (UpperBounded a) => MaybeUpperBounded (Min a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Min a)
@@ -1216,10 +1216,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (Min a)
 deriving via a instance (UpperBounded a) => UpperBounded (Min a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (WrappedMonoid a)
+instance (LowerBounded a) => MaybeLowerBounded (WrappedMonoid a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (WrappedMonoid a)
+instance (UpperBounded a) => MaybeUpperBounded (WrappedMonoid a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (WrappedMonoid a)
@@ -1228,10 +1228,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (WrappedMonoid a)
 deriving via a instance (UpperBounded a) => UpperBounded (WrappedMonoid a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Dual a)
+instance (LowerBounded a) => MaybeLowerBounded (Dual a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Dual a)
+instance (UpperBounded a) => MaybeUpperBounded (Dual a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Dual a)
@@ -1240,10 +1240,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (Dual a)
 deriving via a instance (UpperBounded a) => UpperBounded (Dual a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Product a)
+instance (LowerBounded a) => MaybeLowerBounded (Product a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Product a)
+instance (UpperBounded a) => MaybeUpperBounded (Product a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Product a)
@@ -1252,10 +1252,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (Product a)
 deriving via a instance (UpperBounded a) => UpperBounded (Product a)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Sum a)
+instance (LowerBounded a) => MaybeLowerBounded (Sum a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Sum a)
+instance (UpperBounded a) => MaybeUpperBounded (Sum a)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Sum a)
@@ -1266,10 +1266,10 @@ deriving via a instance (UpperBounded a) => UpperBounded (Sum a)
 #if MIN_VERSION_base(4, 18, 0)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Solo a)
+instance (LowerBounded a) => MaybeLowerBounded (Solo a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Solo a)
+instance (UpperBounded a) => MaybeUpperBounded (Solo a)
 
 -- | @since 0.1
 instance LowerBounded a => LowerBounded (Solo a) where
@@ -1284,10 +1284,10 @@ instance UpperBounded a => UpperBounded (Solo a) where
 #elif MIN_VERSION_base(4, 16, 0)
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Solo a)
+instance (LowerBounded a) => MaybeLowerBounded (Solo a)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Solo a)
+instance (UpperBounded a) => MaybeUpperBounded (Solo a)
 
 -- | @since 0.1
 instance LowerBounded a => LowerBounded (Solo a) where
@@ -1308,16 +1308,16 @@ instance LowerBounded (Proxy t)
 instance UpperBounded (Proxy t)
 
 -- | @since 0.1
-instance AnyLowerBounded (Proxy t)
+instance MaybeLowerBounded (Proxy t)
 
 -- | @since 0.1
-instance AnyUpperBounded (Proxy t)
+instance MaybeUpperBounded (Proxy t)
 
 -- | @since 0.1
-instance (LowerBounded a, LowerBounded b) => AnyLowerBounded (a, b)
+instance (LowerBounded a, LowerBounded b) => MaybeLowerBounded (a, b)
 
 -- | @since 0.1
-instance (UpperBounded a, UpperBounded b) => AnyUpperBounded (a, b)
+instance (UpperBounded a, UpperBounded b) => MaybeUpperBounded (a, b)
 
 -- | @since 0.1
 instance (LowerBounded a, LowerBounded b) => LowerBounded (a, b) where
@@ -1330,10 +1330,10 @@ instance (UpperBounded a, UpperBounded b) => UpperBounded (a, b) where
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance (LowerBounded a) => AnyLowerBounded (Const a b)
+instance (LowerBounded a) => MaybeLowerBounded (Const a b)
 
 -- | @since 0.1
-instance (UpperBounded a) => AnyUpperBounded (Const a b)
+instance (UpperBounded a) => MaybeUpperBounded (Const a b)
 
 -- | @since 0.1
 deriving via a instance (LowerBounded a) => LowerBounded (Const a b)
@@ -1342,10 +1342,10 @@ deriving via a instance (LowerBounded a) => LowerBounded (Const a b)
 deriving via a instance (UpperBounded a) => UpperBounded (Const a b)
 
 -- | @since 0.1
-instance (Applicative f, LowerBounded a) => AnyLowerBounded (Ap f a)
+instance (Applicative f, LowerBounded a) => MaybeLowerBounded (Ap f a)
 
 -- | @since 0.1
-instance (Applicative f, UpperBounded a) => AnyUpperBounded (Ap f a)
+instance (Applicative f, UpperBounded a) => MaybeUpperBounded (Ap f a)
 
 -- | @since 0.1
 instance (Applicative f, LowerBounded a) => LowerBounded (Ap f a) where
@@ -1358,10 +1358,10 @@ instance (Applicative f, UpperBounded a) => UpperBounded (Ap f a) where
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance (Coercible a b) => AnyLowerBounded (Coercion a b)
+instance (Coercible a b) => MaybeLowerBounded (Coercion a b)
 
 -- | @since 0.1
-instance (Coercible a b) => AnyUpperBounded (Coercion a b)
+instance (Coercible a b) => MaybeUpperBounded (Coercion a b)
 
 -- | @since 0.1
 instance (Coercible a b) => LowerBounded (Coercion a b)
@@ -1370,10 +1370,10 @@ instance (Coercible a b) => LowerBounded (Coercion a b)
 instance (Coercible a b) => UpperBounded (Coercion a b)
 
 -- | @since 0.1
-instance (a ~ b) => AnyLowerBounded (a :~: b)
+instance (a ~ b) => MaybeLowerBounded (a :~: b)
 
 -- | @since 0.1
-instance (a ~ b) => AnyUpperBounded (a :~: b)
+instance (a ~ b) => MaybeUpperBounded (a :~: b)
 
 -- | @since 0.1
 instance (a ~ b) => LowerBounded (a :~: b) where
@@ -1386,10 +1386,10 @@ instance (a ~ b) => UpperBounded (a :~: b) where
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance (a ~~ b) => AnyLowerBounded (a :~~: b)
+instance (a ~~ b) => MaybeLowerBounded (a :~~: b)
 
 -- | @since 0.1
-instance (a ~~ b) => AnyUpperBounded (a :~~: b)
+instance (a ~~ b) => MaybeUpperBounded (a :~~: b)
 
 -- | @since 0.1
 instance (a ~~ b) => LowerBounded (a :~~: b) where
@@ -1402,10 +1402,10 @@ instance (a ~~ b) => UpperBounded (a :~~: b) where
   {-# INLINE upperBound #-}
 
 -- | @since 0.1
-instance (LowerBounded a, LowerBounded b, LowerBounded c) => AnyLowerBounded (a, b, c)
+instance (LowerBounded a, LowerBounded b, LowerBounded c) => MaybeLowerBounded (a, b, c)
 
 -- | @since 0.1
-instance (UpperBounded a, UpperBounded b, UpperBounded c) => AnyUpperBounded (a, b, c)
+instance (UpperBounded a, UpperBounded b, UpperBounded c) => MaybeUpperBounded (a, b, c)
 
 -- | @since 0.1
 instance (LowerBounded a, LowerBounded b, LowerBounded c) => LowerBounded (a, b, c) where
@@ -1424,7 +1424,7 @@ instance
     LowerBounded c,
     LowerBounded d
   ) =>
-  AnyLowerBounded (a, b, c, d)
+  MaybeLowerBounded (a, b, c, d)
 
 -- | @since 0.1
 instance
@@ -1433,7 +1433,7 @@ instance
     UpperBounded c,
     UpperBounded d
   ) =>
-  AnyUpperBounded (a, b, c, d)
+  MaybeUpperBounded (a, b, c, d)
 
 -- | @since 0.1
 instance
@@ -1467,7 +1467,7 @@ instance
     LowerBounded d,
     LowerBounded e
   ) =>
-  AnyLowerBounded (a, b, c, d, e)
+  MaybeLowerBounded (a, b, c, d, e)
 
 -- | @since 0.1
 instance
@@ -1477,7 +1477,7 @@ instance
     UpperBounded d,
     UpperBounded e
   ) =>
-  AnyUpperBounded (a, b, c, d, e)
+  MaybeUpperBounded (a, b, c, d, e)
 
 -- | @since 0.1
 instance
@@ -1514,7 +1514,7 @@ instance
     LowerBounded e,
     LowerBounded f
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f)
+  MaybeLowerBounded (a, b, c, d, e, f)
 
 -- | @since 0.1
 instance
@@ -1525,7 +1525,7 @@ instance
     UpperBounded e,
     UpperBounded f
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f)
+  MaybeUpperBounded (a, b, c, d, e, f)
 
 -- | @since 0.1
 instance
@@ -1579,7 +1579,7 @@ instance
     LowerBounded f,
     LowerBounded g
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g)
+  MaybeLowerBounded (a, b, c, d, e, f, g)
 
 -- | @since 0.1
 instance
@@ -1591,7 +1591,7 @@ instance
     UpperBounded f,
     UpperBounded g
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g)
+  MaybeUpperBounded (a, b, c, d, e, f, g)
 
 -- | @since 0.1
 instance
@@ -1650,7 +1650,7 @@ instance
     LowerBounded g,
     LowerBounded h
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h)
 
 -- | @since 0.1
 instance
@@ -1663,7 +1663,7 @@ instance
     UpperBounded g,
     UpperBounded h
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h)
 
 -- | @since 0.1
 instance
@@ -1727,7 +1727,7 @@ instance
     LowerBounded h,
     LowerBounded i
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i)
 
 -- | @since 0.1
 instance
@@ -1741,7 +1741,7 @@ instance
     UpperBounded h,
     UpperBounded i
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i)
 
 -- | @since 0.1
 instance
@@ -1810,7 +1810,7 @@ instance
     LowerBounded i,
     LowerBounded j
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i, j)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i, j)
 
 -- | @since 0.1
 instance
@@ -1825,7 +1825,7 @@ instance
     UpperBounded i,
     UpperBounded j
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i, j)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i, j)
 
 -- | @since 0.1
 instance
@@ -1899,7 +1899,7 @@ instance
     LowerBounded j,
     LowerBounded k
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i, j, k)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i, j, k)
 
 -- | @since 0.1
 instance
@@ -1915,7 +1915,7 @@ instance
     UpperBounded j,
     UpperBounded k
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i, j, k)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i, j, k)
 
 -- | @since 0.1
 instance
@@ -1994,7 +1994,7 @@ instance
     LowerBounded k,
     LowerBounded l
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l)
 
 -- | @since 0.1
 instance
@@ -2011,7 +2011,7 @@ instance
     UpperBounded k,
     UpperBounded l
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l)
 
 -- | @since 0.1
 instance
@@ -2095,7 +2095,7 @@ instance
     LowerBounded l,
     LowerBounded m
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m)
 
 -- | @since 0.1
 instance
@@ -2113,7 +2113,7 @@ instance
     UpperBounded l,
     UpperBounded m
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m)
 
 -- | @since 0.1
 instance
@@ -2202,7 +2202,7 @@ instance
     LowerBounded m,
     LowerBounded n
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
 
 -- | @since 0.1
 instance
@@ -2221,7 +2221,7 @@ instance
     UpperBounded m,
     UpperBounded n
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
 
 -- | @since 0.1
 instance
@@ -2315,7 +2315,7 @@ instance
     LowerBounded n,
     LowerBounded o
   ) =>
-  AnyLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+  MaybeLowerBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
 
 -- | @since 0.1
 instance
@@ -2335,7 +2335,7 @@ instance
     UpperBounded n,
     UpperBounded o
   ) =>
-  AnyUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+  MaybeUpperBounded (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
 
 -- | @since 0.1
 instance

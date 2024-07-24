@@ -11,8 +11,8 @@ where
 import Data.Bounds
   ( LowerBounded (lowerBound),
     UpperBounded (upperBound),
-    someLowerBound,
-    someUpperBound,
+    maybeLowerBound,
+    maybeUpperBound,
   )
 import Data.Typeable (Proxy, Typeable, typeOf)
 import Hedgehog
@@ -60,7 +60,7 @@ maxBoundSynced =
           annotateShow $ maxBound @a
           annotateShow $ upperBound @a
           maxBound @a === upperBound
-          Just maxBound === someUpperBound @a
+          Just maxBound === maybeUpperBound @a
         MkBoundedTypeNoEq p@(_ :: Proxy a) eqFn -> do
           annotate $ showTy p
           annotateShow $ maxBound @a
@@ -80,7 +80,7 @@ minBoundSynced =
           annotateShow $ minBound @a
           annotateShow $ lowerBound @a
           minBound @a === lowerBound
-          Just minBound === someLowerBound @a
+          Just minBound === maybeLowerBound @a
         MkBoundedTypeNoEq p@(_ :: Proxy a) eqFn -> do
           annotate $ showTy p
           annotateShow $ minBound @a
