@@ -18,11 +18,10 @@ maintainer:         tbidne@protonmail.com
 homepage:           https://github.com/tbidne/bounds/
 bug-reports:        https://github.com/tbidne/bounds/issues
 synopsis:           Typeclasses for bounded types
-description:        Typeclasses for bounded types
+description:        Provides typeclasses for bounded types
 category:           Numeric
-extra-source-files:
-  CHANGELOG.md
-  README.md
+extra-source-files: README.md
+extra-doc-files:    CHANGELOG.md
 
 source-repository head
   type:     git
