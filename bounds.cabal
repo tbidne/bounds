@@ -11,6 +11,7 @@ tested-with:
    || ==9.6.5
    || ==9.8.2
    || ==9.10.1
+   || ==9.12.1
 
 copyright:          2022-2025 Thomas Bidne
 author:             Thomas Bidne
@@ -49,7 +50,7 @@ common common-lang
 library
   import:          common-lang
   exposed-modules: Data.Bounds
-  build-depends:   base >=4.14.0.0 && <4.21
+  build-depends:   base >=4.14.0.0 && <4.22
   hs-source-dirs:  src
 
 test-suite unit
@@ -63,7 +64,7 @@ test-suite unit
   build-depends:
     , base
     , bounds
-    , hedgehog        >=1.0.2   && <1.5
+    , hedgehog        >=1.0.2   && <1.6
     , tasty           >=1.1.0.3 && <1.6
     , tasty-hedgehog  >=1.0.1.0 && <1.5
 
